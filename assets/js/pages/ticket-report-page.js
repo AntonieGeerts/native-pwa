@@ -376,13 +376,13 @@ const TicketReportPage = {
     }
   },
   
-  // Load form fields
+  // Load form fields with memory optimization for mobile
   loadFormFields(formId) {
     const dynamicFormFields = document.querySelector('.js-dynamic-form-fields');
     if (!dynamicFormFields) return;
     
     // Clear existing fields
-    dynamicFormFields.innerHTML = '<div class="row"><div class="label">Loading form fields...</div></div>';
+    dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Loading form fields...</div></div>';
     
     // If no form is selected, clear the dynamic fields
     if (!formId) {
@@ -390,42 +390,62 @@ const TicketReportPage = {
       return;
     }
     
-    // Try to get form details from global data store first
-    let formData = null;
-    if (window.App && window.App.data && Array.isArray(window.App.data.forms)) {
-      formData = window.App.data.forms.find(form => form.id == formId);
-    }
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-indicator';
+    loadingIndicator.innerHTML = '<div class="spinner"></div>';
+    dynamicFormFields.innerHTML = '';
+    dynamicFormFields.appendChild(loadingIndicator);
     
-    if (formData) {
-      console.log('Form details found in global data store:', formData);
-      this.renderFormFields(formData, dynamicFormFields);
-    } else {
-      // Fallback to API if not found in global data store
-      TicketService.getForm(formId)
-        .then(data => {
-          console.log('Form details fetched from API:', data);
-          
-          // Clear existing fields
-          dynamicFormFields.innerHTML = '';
-          
-          if (data && Object.keys(data).length > 0) {
-            this.renderFormFields(data, dynamicFormFields);
-          } else {
-            console.error('Form data is empty or invalid');
-            dynamicFormFields.innerHTML = '<div class="row"><div class="label">Error loading form fields</div></div>';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching form details:', error);
-          dynamicFormFields.innerHTML = '<div class="row"><div class="label">Error loading form fields</div></div>';
-        });
-    }
+    // Use setTimeout to prevent UI blocking
+    setTimeout(() => {
+      try {
+        // Try to get form details from global data store first
+        let formData = null;
+        if (window.App && window.App.data && Array.isArray(window.App.data.forms)) {
+          formData = window.App.data.forms.find(form => form.id == formId);
+        }
+        
+        if (formData) {
+          console.log('Form details found in global data store:', formData);
+          // Use memory-optimized rendering
+          this.renderFormFieldsLazy(formData, dynamicFormFields);
+        } else {
+          // Fallback to API if not found in global data store
+          TicketService.getForm(formId)
+            .then(data => {
+              console.log('Form details fetched from API:', data);
+              
+              // Clear existing fields
+              dynamicFormFields.innerHTML = '';
+              
+              if (data && Object.keys(data).length > 0) {
+                // Use memory-optimized rendering
+                this.renderFormFieldsLazy(data, dynamicFormFields);
+              } else {
+                console.error('Form data is empty or invalid');
+                dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching form details:', error);
+              dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
+            });
+        }
+      } catch (error) {
+        console.error('Error in loadFormFields:', error);
+        dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
+      }
+    }, 100); // Small delay to allow UI to update
   },
   
   // Render form fields
   renderFormFields(data, dynamicFormFields) {
     // Clear existing fields
     dynamicFormFields.innerHTML = '';
+    
+    // Create a document fragment to improve performance
+    const fragment = document.createDocumentFragment();
     
     // Parse form data
     let formData = data.data;
@@ -437,8 +457,17 @@ const TicketReportPage = {
       }
     }
     
-    // Store form fields for later use
-    this.dynamicFormFields = formData;
+    // Store form fields for later use (only store necessary data)
+    this.dynamicFormFields = formData ? formData.map(field => {
+      // Only keep essential properties to reduce memory usage
+      return {
+        name: field.name,
+        type: field.type,
+        label: field.label,
+        required: field.required,
+        options: field.options
+      };
+    }) : [];
     
     // Render form fields
     if (Array.isArray(formData)) {
@@ -446,26 +475,28 @@ const TicketReportPage = {
       let currentSection = null;
       let sectionFields = [];
       
+      // Process all fields first to group them
+      const sections = [];
+      let paragraphs = [];
+      
       formData.forEach(field => {
         // If this is a header, start a new section
         if (field.type === 'header') {
-          // If we have fields in the current section, render them
+          // If we have fields in the current section, save it
           if (currentSection && sectionFields.length > 0) {
-            const sectionHtml = this.renderFormSection(currentSection, sectionFields);
-            dynamicFormFields.innerHTML += sectionHtml;
+            sections.push({
+              title: currentSection,
+              fields: [...sectionFields]
+            });
           }
           
           // Start a new section
           currentSection = field.label;
           sectionFields = [];
         }
-        // If this is a paragraph, render it directly
+        // If this is a paragraph, save it separately
         else if (field.type === 'paragraph') {
-          dynamicFormFields.innerHTML += `
-            <div class="row">
-              <div class="p-form-label" style="font-style: italic;">${field.label}</div>
-            </div>
-          `;
+          paragraphs.push(field.label);
         }
         // Otherwise, add the field to the current section
         else {
@@ -473,11 +504,36 @@ const TicketReportPage = {
         }
       });
       
-      // Render the last section if there is one
+      // Add the last section if there is one
       if (currentSection && sectionFields.length > 0) {
-        const sectionHtml = this.renderFormSection(currentSection, sectionFields);
-        dynamicFormFields.innerHTML += sectionHtml;
+        sections.push({
+          title: currentSection,
+          fields: [...sectionFields]
+        });
       }
+      
+      // Now render all sections at once
+      sections.forEach(section => {
+        const sectionElement = this.createFormSection(section.title, section.fields);
+        fragment.appendChild(sectionElement);
+      });
+      
+      // Render paragraphs
+      paragraphs.forEach(paragraphText => {
+        const paragraphDiv = document.createElement('div');
+        paragraphDiv.className = 'row';
+        
+        const paragraphLabel = document.createElement('div');
+        paragraphLabel.className = 'p-form-label';
+        paragraphLabel.style.fontStyle = 'italic';
+        paragraphLabel.textContent = paragraphText;
+        
+        paragraphDiv.appendChild(paragraphLabel);
+        fragment.appendChild(paragraphDiv);
+      });
+      
+      // Append all elements at once
+      dynamicFormFields.appendChild(fragment);
     }
     
     // Special handling for certain form types
@@ -491,33 +547,180 @@ const TicketReportPage = {
     }
   },
   
-  // Render a form section with header and fields
-  renderFormSection(sectionTitle, fields) {
-    let html = `
-      <div class="form-section">
-        <div class="row">
-          <div class="section-header" style="font-weight: 600; font-size: 16px; margin: 16px 0 8px 0; color: var(--primary-color);">
-            ${sectionTitle}
-          </div>
-        </div>
-    `;
+  // Memory-optimized lazy loading of form fields
+  renderFormFieldsLazy(data, dynamicFormFields) {
+    try {
+      // Clear existing fields
+      dynamicFormFields.innerHTML = '';
+      
+      // Parse form data
+      let formData = data.data;
+      if (typeof formData === 'string') {
+        try {
+          formData = JSON.parse(formData);
+        } catch (e) {
+          console.error('Error parsing form data:', e);
+          formData = [];
+        }
+      }
+      
+      // Store minimal form fields data for later use
+      this.dynamicFormFields = formData ? formData.map(field => ({
+        name: field.name,
+        type: field.type,
+        label: field.label,
+        required: field.required,
+        options: field.options
+      })) : [];
+      
+      // Process form data
+      if (Array.isArray(formData)) {
+        // Group fields by sections
+        const sections = [];
+        const paragraphs = [];
+        let currentSection = null;
+        let sectionFields = [];
+        
+        // First pass: organize fields into sections
+        formData.forEach(field => {
+          if (field.type === 'header') {
+            if (currentSection && sectionFields.length > 0) {
+              sections.push({
+                title: currentSection,
+                fields: [...sectionFields]
+              });
+            }
+            currentSection = field.label;
+            sectionFields = [];
+          } else if (field.type === 'paragraph') {
+            paragraphs.push(field.label);
+          } else {
+            sectionFields.push(field);
+          }
+        });
+        
+        // Add the last section
+        if (currentSection && sectionFields.length > 0) {
+          sections.push({
+            title: currentSection,
+            fields: [...sectionFields]
+          });
+        }
+        
+        // Create a container for all sections
+        const sectionsContainer = document.createElement('div');
+        sectionsContainer.className = 'form-sections-container';
+        dynamicFormFields.appendChild(sectionsContainer);
+        
+        // Render sections in batches to avoid memory issues
+        const renderNextBatch = (index = 0, batchSize = 1) => {
+          // Create a document fragment for this batch
+          const fragment = document.createDocumentFragment();
+          
+          // Render a batch of sections
+          const endIndex = Math.min(index + batchSize, sections.length);
+          for (let i = index; i < endIndex; i++) {
+            const section = sections[i];
+            const sectionElement = this.createFormSection(section.title, section.fields);
+            fragment.appendChild(sectionElement);
+          }
+          
+          // Append this batch to the container
+          sectionsContainer.appendChild(fragment);
+          
+          // If there are more sections to render, schedule the next batch
+          if (endIndex < sections.length) {
+            setTimeout(() => {
+              renderNextBatch(endIndex, batchSize);
+            }, 50); // Small delay between batches
+          } else {
+            // All sections rendered, now render paragraphs
+            const paragraphsFragment = document.createDocumentFragment();
+            paragraphs.forEach(paragraphText => {
+              const paragraphDiv = document.createElement('div');
+              paragraphDiv.className = 'row';
+              
+              const paragraphLabel = document.createElement('div');
+              paragraphLabel.className = 'p-form-label';
+              paragraphLabel.style.fontStyle = 'italic';
+              paragraphLabel.textContent = paragraphText;
+              
+              paragraphDiv.appendChild(paragraphLabel);
+              paragraphsFragment.appendChild(paragraphDiv);
+            });
+            sectionsContainer.appendChild(paragraphsFragment);
+          }
+        };
+        
+        // Start rendering sections
+        renderNextBatch();
+      }
+      
+      // Special handling for certain form types
+      if (data.name && (data.name.toLowerCase().includes('visitor') ||
+          data.name.toLowerCase().includes('gate pass'))) {
+        document.querySelector('.js-generate-qr-info-visitors').style.display = 'block';
+        document.querySelector('.js-generate-qr-info-dates').style.display = 'block';
+      } else {
+        document.querySelector('.js-generate-qr-info-visitors').style.display = 'none';
+        document.querySelector('.js-generate-qr-info-dates').style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Error in renderFormFieldsLazy:', error);
+      dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error rendering form fields</div></div>';
+    }
+  },
+  
+  // Create a form section with header and fields (returns DOM element)
+  createFormSection(sectionTitle, fields) {
+    const sectionDiv = document.createElement('div');
+    sectionDiv.className = 'form-section';
     
-    // Render each field in the section
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'row';
+    
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'section-header';
+    headerDiv.style.fontWeight = '600';
+    headerDiv.style.fontSize = '16px';
+    headerDiv.style.margin = '16px 0 8px 0';
+    headerDiv.style.color = 'var(--primary-color)';
+    headerDiv.textContent = sectionTitle;
+    
+    rowDiv.appendChild(headerDiv);
+    sectionDiv.appendChild(rowDiv);
+    
+    // Add fields to the section
     fields.forEach(field => {
-      const fieldHtml = this.renderFormField(field);
-      if (fieldHtml) {
-        html += fieldHtml;
+      const fieldElement = this.createFormField(field);
+      if (fieldElement) {
+        sectionDiv.appendChild(fieldElement);
       }
     });
     
-    html += `</div>`;
-    return html;
+    return sectionDiv;
+  },
+  
+  // Create a form field (returns DOM element or null)
+  createFormField(field) {
+    // Get HTML for the field
+    const fieldHtml = this.renderFormField(field);
+    if (!fieldHtml) return null;
+    
+    // Create a temporary container
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = fieldHtml;
+    
+    // Return the first child (the actual field element)
+    return tempContainer.firstElementChild;
   },
   
   // Render a form field
   renderFormField(field) {
     let html = '';
     const required = field.required ? '<span style="color:#da848c">*</span>' : '';
+    
+    try {
     
     switch (field.type) {
       case 'text':
@@ -545,7 +748,7 @@ const TicketReportPage = {
       case 'select':
         let options = '';
         if (field.options && Array.isArray(field.options)) {
-          options = field.options.map(option => `<option value="${option.value}">${option.label}</option>`).join('');
+          options = field.options.map(option => `<option value="${option.value || ''}">${option.label || ''}</option>`).join('');
         }
         
         html = `
@@ -579,9 +782,9 @@ const TicketReportPage = {
         if (field.options && Array.isArray(field.options)) {
           radioOptions = field.options.map((option, index) => `
             <div class="p-form-radio-cont">
-              <input type="radio" name="${field.name}" id="${field.name}_${index}" value="${option.value}" ${index === 0 && field.required ? 'required' : ''}>
+              <input type="radio" name="${field.name}" id="${field.name}_${index}" value="${option.value || ''}" ${index === 0 && field.required ? 'required' : ''}>
               <span></span>
-              <label for="${field.name}_${index}">${option.label}</label>
+              <label for="${field.name}_${index}">${option.label || ''}</label>
             </div>
           `).join('');
         }
@@ -640,6 +843,14 @@ const TicketReportPage = {
     }
     
     return html;
+    } catch (error) {
+      console.error('Error rendering form field:', error, field);
+      return `
+        <div class="row">
+          <div class="label p-form-label">Error rendering field</div>
+        </div>
+      `;
+    }
   },
   
   // Pre-select request type
