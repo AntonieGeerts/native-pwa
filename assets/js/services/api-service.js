@@ -15,9 +15,9 @@ const ApiService = {
     
     // Use absolute URL for native apps, relative URL for web
     if (isNative) {
-      // Try different API URLs for native apps
-      console.log('Using API URL for native app');
-      return 'https://app.managedpmo.com/api';
+      // Use the correct API URL for native apps
+      console.log('Using absolute API URL for native app');
+      return 'https://new-app.managedpmo.com/app/api';
     } else {
       // Use relative URL for web
       console.log('Using relative API URL for web');
