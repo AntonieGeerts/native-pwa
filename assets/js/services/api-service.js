@@ -6,6 +6,7 @@
 const ApiService = {
   /**
    * Base API URL
+   * The Apache configuration has an alias for /app that points to /var/www/pmo-dev/pmo2__backend/public
    */
   baseUrl: '/app/api',
   
@@ -22,8 +23,10 @@ const ApiService = {
    * @returns {Object} The default headers
    */
   getHeaders() {
+    const token = this.getToken();
     return {
-      'Authorization': `Bearer ${this.getToken()}`,
+      'pwa_token': token,
+      'Authorization': `Bearer ${token}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     };

@@ -158,6 +158,54 @@ function initUI() {
       localStorage.setItem('dark_mode', this.checked);
     });
   }
+  
+  // Load global data if authenticated
+  if (AppState.authenticated) {
+    loadGlobalData();
+  }
+}
+
+/**
+ * Load global data for the app
+ */
+async function loadGlobalData() {
+  try {
+    console.log('Loading global data...');
+    
+    // Load categories
+    const categories = await apiRequest('/ticket/ticket-category');
+    if (Array.isArray(categories)) {
+      window.appData.categories = categories;
+      console.log('Categories loaded:', categories.length);
+    } else if (categories && typeof categories === 'object' && categories.data && Array.isArray(categories.data)) {
+      window.appData.categories = categories.data;
+      console.log('Categories loaded from data property:', categories.data.length);
+    }
+    
+    // Load forms
+    const forms = await apiRequest('/ticket/ticket-form');
+    if (Array.isArray(forms)) {
+      window.appData.forms = forms;
+      console.log('Forms loaded:', forms.length);
+    } else if (forms && typeof forms === 'object' && forms.data && Array.isArray(forms.data)) {
+      window.appData.forms = forms.data;
+      console.log('Forms loaded from data property:', forms.data.length);
+    }
+    
+    // Load statuses
+    const statuses = await apiRequest('/ticket/ticket-status');
+    if (Array.isArray(statuses)) {
+      window.appData.statuses = statuses;
+      console.log('Statuses loaded:', statuses.length);
+    } else if (statuses && typeof statuses === 'object' && statuses.data && Array.isArray(statuses.data)) {
+      window.appData.statuses = statuses.data;
+      console.log('Statuses loaded from data property:', statuses.data.length);
+    }
+    
+    console.log('Global data loaded successfully');
+  } catch (error) {
+    console.error('Error loading global data:', error);
+  }
 }
 
 /**
@@ -242,10 +290,19 @@ async function apiRequest(endpoint, options = {}) {
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', initApp);
 
+// Initialize global data store
+window.appData = {
+  categories: [],
+  forms: [],
+  statuses: []
+};
+
 // Export app utilities
 window.App = {
   config: AppConfig,
   state: AppState,
+  data: window.appData,
   showToast,
-  apiRequest
+  apiRequest,
+  loadGlobalData
 };

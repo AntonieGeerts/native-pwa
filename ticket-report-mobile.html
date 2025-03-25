@@ -95,20 +95,23 @@
       display: block;
     }
     
+    /* Puppertino-styled form elements */
     .select-container {
       position: relative;
       margin-bottom: 16px;
+      width: 100%;
     }
     
     .select-container select {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid var(--divider-color);
+      border: 1px solid var(--p-input-bd);
       border-radius: 8px;
       font-size: 14px;
-      background-color: var(--card-color);
-      color: var(--text-color);
+      background-color: var(--p-input-bg);
+      color: var(--p-input-color);
       appearance: none;
+      margin: 0;
     }
     
     .select-container i {
@@ -120,40 +123,58 @@
       pointer-events: none;
     }
     
+    .text-container {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    
     .text-container input {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid var(--divider-color);
+      border: 1px solid var(--p-input-bd);
       border-radius: 8px;
       font-size: 14px;
-      background-color: var(--card-color);
-      color: var(--text-color);
+      background-color: var(--p-input-bg);
+      color: var(--p-input-color);
+      margin: 0;
+      box-shadow: 0px 0.5px 2.5px rgba(0,0,0,.3), 0px 0px 0px rgba(0,0,0,.1);
+    }
+    
+    .textarea-container {
+      width: 100%;
+      margin-bottom: 16px;
     }
     
     .textarea-container textarea {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid var(--divider-color);
+      border: 1px solid var(--p-input-bd);
       border-radius: 8px;
       font-size: 14px;
-      background-color: var(--card-color);
-      color: var(--text-color);
+      background-color: var(--p-input-bg);
+      color: var(--p-input-color);
       min-height: 120px;
       resize: vertical;
+      margin: 0;
+      box-shadow: 0px 0.5px 2.5px rgba(0,0,0,.3), 0px 0px 0px rgba(0,0,0,.1);
     }
     
     .date-container {
       position: relative;
+      width: 100%;
+      margin-bottom: 16px;
     }
     
     .date-container input {
       width: 100%;
       padding: 12px 16px 12px 40px;
-      border: 1px solid var(--divider-color);
+      border: 1px solid var(--p-input-bd);
       border-radius: 8px;
       font-size: 14px;
-      background-color: var(--card-color);
-      color: var(--text-color);
+      background-color: var(--p-input-bg);
+      color: var(--p-input-color);
+      margin: 0;
+      box-shadow: 0px 0.5px 2.5px rgba(0,0,0,.3), 0px 0px 0px rgba(0,0,0,.1);
     }
     
     .date-container i {
@@ -162,20 +183,25 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-secondary);
+      z-index: 1;
     }
     
     .time-container {
       position: relative;
+      width: 100%;
+      margin-bottom: 16px;
     }
     
     .time-container input {
       width: 100%;
       padding: 12px 16px 12px 40px;
-      border: 1px solid var(--divider-color);
+      border: 1px solid var(--p-input-bd);
       border-radius: 8px;
       font-size: 14px;
-      background-color: var(--card-color);
-      color: var(--text-color);
+      background-color: var(--p-input-bg);
+      color: var(--p-input-color);
+      margin: 0;
+      box-shadow: 0px 0.5px 2.5px rgba(0,0,0,.3), 0px 0px 0px rgba(0,0,0,.1);
     }
     
     .time-container i {
@@ -184,6 +210,17 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-secondary);
+      z-index: 1;
+    }
+    
+    /* Focus states for form elements */
+    .select-container select:focus,
+    .text-container input:focus,
+    .textarea-container textarea:focus,
+    .date-container input:focus,
+    .time-container input:focus {
+      outline: 3px solid rgb(0 122 255 / 50%);
+      border-color: rgb(0 122 255);
     }
     
     .checkbox-container {
@@ -451,9 +488,9 @@
           <div class="collapsible-header"><span>Create Ticket</span><span><i class="fas fa-caret-down"></i></span></div>
           <div class="collapsible-body">
             <div class="row">
-              <div class="label">Category&nbsp;<span style="color:#da848c">*</span></div>
-              <div class="select-container">
-                <select name="ticket_category_id" id="ticket_category_id" class="js-valid-required" data-thefieldname="Category">
+              <div class="label p-form-label">Category&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container p-form-select">
+                <select name="ticket_category_id" id="ticket_category_id" class="js-valid-required p-form-no-validate" data-thefieldname="Category">
                   <option value="">Choose category</option>
                 </select>
                 <i class="fas fa-chevron-down"></i>
@@ -461,9 +498,9 @@
             </div>
             
             <div class="row">
-              <div class="label">Form Type&nbsp;<span style="color:#da848c">*</span></div>
-              <div class="select-container">
-                <select name="ticket_form_id" id="ticket_form_id" class="js-valid-required" data-thefieldname="Form">
+              <div class="label p-form-label">Form Type&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container p-form-select">
+                <select name="ticket_form_id" id="ticket_form_id" class="js-valid-required p-form-no-validate" data-thefieldname="Form">
                   <option value="">Choose form</option>
                 </select>
                 <i class="fas fa-chevron-down"></i>
@@ -471,9 +508,9 @@
             </div>
             
             <div class="row">
-              <div class="label">Status&nbsp;<span style="color:#da848c">*</span></div>
-              <div class="select-container">
-                <select name="ticket_status" id="ticket_status" class="js-valid-required" data-thefieldname="Status">
+              <div class="label p-form-label">Status&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container p-form-select">
+                <select name="ticket_status" id="ticket_status" class="js-valid-required p-form-no-validate" data-thefieldname="Status">
                   <option value="">Choose status</option>
                 </select>
                 <i class="fas fa-chevron-down"></i>
@@ -481,14 +518,14 @@
             </div>
             
             <div class="row js-billing-info-container" style="display:none">
-              <div class="label">Description&nbsp;<span style="color:#da848c">*</span></div>
-              <div class="textarea-field">
-                <div class="js-billing-info-html"></div>  
+              <div class="label p-form-label">Description&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="textarea-container">
+                <div class="js-billing-info-html"></div>
               </div>
             </div>
             
             <div class="row js-generate-qr-info-visitors" style="display: none;">
-              <div class="label">Visitors</div>
+              <div class="label p-form-label">Visitors</div>
               <div class="grid-container">
                 <table>
                   <thead>
@@ -502,11 +539,11 @@
                     <tr>
                       <td>
                         <span class="grid-edit"></span>
-                        <input class="grid-input" type="text">
+                        <input class="grid-input p-form-text p-form-no-validate" type="text">
                       </td>
                       <td>
                         <span class="grid-edit"></span>
-                        <input class="grid-input" type="text">
+                        <input class="grid-input p-form-text p-form-no-validate" type="text">
                       </td>
                       <td>
                         <div class="actions-container">
@@ -521,9 +558,9 @@
             </div>
             
             <div class="row js-generate-qr-info-dates" style="display: none;">
-              <div class="label">Dates of visit</div>
+              <div class="label p-form-label">Dates of visit</div>
               <div class="date-container">
-                <input type="text" class="datepicker" id="visit-dates" multiple>
+                <input type="text" class="datepicker p-form-text p-form-no-validate" id="visit-dates" multiple>
                 <i class="far fa-calendar-alt"></i>
               </div>
             </div>
@@ -538,16 +575,16 @@
       </ul>
       
       <div class="comment-section">
-        <div class="comment-label">Comments</div>
+        <div class="comment-label p-form-label">Comments</div>
         <div class="comments" id="comments-container">
           <!-- Comments will be inserted here by JavaScript -->
         </div>
         <div class="comment-input">
-          <div class="textarea-container"> 
-            <textarea class="materialize-textarea" id="comment-text"></textarea>       
+          <div class="textarea-container">
+            <textarea class="materialize-textarea p-form-text p-form-no-validate" id="comment-text"></textarea>
           </div>
           <div class="button-container">
-            <a href="#" class="comment-submit-btn" id="comment-submit-btn">Submit</a>
+            <a href="#" class="comment-submit-btn p-form-send" id="comment-submit-btn">Submit</a>
           </div>
         </div>
       </div>
@@ -570,7 +607,7 @@
       </div>
       
       <div class="submit-button-container">
-        <button type="button" class="submit-request-btn" id="submit-request-btn">Submit Request</button>
+        <button type="button" class="submit-request-btn p-form-send" id="submit-request-btn">Submit Request</button>
       </div>
     </form>
     

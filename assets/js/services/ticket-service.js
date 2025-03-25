@@ -23,7 +23,30 @@ const TicketService = {
    */
   async getFormsWithCategories() {
     try {
-      return await ApiService.get('/ticket/ticket-forms-with-categories');
+      const response = await ApiService.get('/ticket/ticket-forms-with-categories');
+      console.log('Raw forms with categories response:', response);
+      
+      // Handle different response formats
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response && typeof response === 'object') {
+        // Check if the response has a data property that's an array
+        if (response.data && Array.isArray(response.data)) {
+          return response.data;
+        }
+        
+        // Check other common properties that might contain the forms array
+        const possibleArrayProps = ['forms', 'results', 'items'];
+        for (const prop of possibleArrayProps) {
+          if (response[prop] && Array.isArray(response[prop])) {
+            return response[prop];
+          }
+        }
+      }
+      
+      // If we couldn't find an array, return an empty array
+      console.warn('Could not find forms array in response:', response);
+      return [];
     } catch (error) {
       console.error('Error fetching ticket forms with categories:', error);
       throw error;
@@ -36,7 +59,30 @@ const TicketService = {
    */
   async getForms() {
     try {
-      return await ApiService.get('/ticket/ticket-form');
+      const response = await ApiService.get('/ticket/ticket-form');
+      console.log('Raw forms response:', response);
+      
+      // Handle different response formats
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response && typeof response === 'object') {
+        // Check if the response has a data property that's an array
+        if (response.data && Array.isArray(response.data)) {
+          return response.data;
+        }
+        
+        // Check other common properties that might contain the forms array
+        const possibleArrayProps = ['forms', 'results', 'items'];
+        for (const prop of possibleArrayProps) {
+          if (response[prop] && Array.isArray(response[prop])) {
+            return response[prop];
+          }
+        }
+      }
+      
+      // If we couldn't find an array, return an empty array
+      console.warn('Could not find forms array in response:', response);
+      return [];
     } catch (error) {
       console.error('Error fetching ticket forms:', error);
       throw error;
