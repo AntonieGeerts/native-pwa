@@ -652,7 +652,33 @@
   <script src="assets/js/services/api-service.js"></script>
   <script src="assets/js/services/ticket-service.js"></script>
   
+  <!-- Utilities -->
+  <script src="assets/js/utils/logger.js"></script>
+  
   <!-- Page-specific script -->
   <script src="assets/js/pages/ticket-report-page.js"></script>
+  
+  <!-- Initialize Logger -->
+  <script>
+    // Initialize logger with memory usage tracking
+    Logger.init({
+      level: Logger.levels.DEBUG,
+      maxBufferSize: 20,
+      logFileName: 'ticket-form-debug.log',
+      clearOnInit: true,
+      logMemoryUsage: true,
+      memoryLoggingInterval: 5000 // Log memory usage every 5 seconds
+    });
+    
+    // Log page load
+    Logger.info('Ticket report page loaded', {
+      userAgent: navigator.userAgent,
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
+      devicePixelRatio: window.devicePixelRatio,
+      isNative: window.CapacitorApp ? window.CapacitorApp.isNativePlatform() : false,
+      platform: window.Capacitor ? window.Capacitor.getPlatform() : 'web'
+    });
+  </script>
 </body>
 </html>

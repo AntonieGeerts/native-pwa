@@ -1,0 +1,440 @@
+/**
+ * Form Fields CSS
+ * Improved styling for form fields in the PMO Native App
+ */
+
+/* Form container */
+.form-container {
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+/* Form sections container */
+.form-sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Form section */
+.form-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Section header */
+.section-header {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 8px 0 16px 0;
+  color: var(--primary-color, #007aff);
+  border-bottom: 1px solid #f2f2f7;
+  padding-bottom: 8px;
+}
+
+/* Form row */
+.row {
+  margin-bottom: 16px;
+}
+
+/* Form label */
+.p-form-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333333;
+}
+
+/* Required field indicator */
+.p-form-label span {
+  color: #da848c;
+  margin-left: 4px;
+}
+
+/* Text input container */
+.text-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Text input */
+.p-form-text {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.p-form-text:focus {
+  border-color: #007aff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+}
+
+/* Textarea container */
+.textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Textarea */
+textarea.p-form-text {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Select container */
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Select dropdown */
+.p-form-select select {
+  width: 100%;
+  padding: 12px;
+  padding-right: 32px;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.p-form-select select:focus {
+  border-color: #007aff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+}
+
+/* Select dropdown arrow */
+.p-form-select i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8e8e93;
+  pointer-events: none;
+}
+
+/* Checkbox container */
+.p-form-checkbox-cont {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Hide default checkbox */
+.p-form-checkbox-cont input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom checkbox */
+.p-form-checkbox-cont span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #ffffff;
+  border: 1px solid #d1d1d6;
+  border-radius: 4px;
+}
+
+/* Checkbox hover */
+.p-form-checkbox-cont:hover input ~ span {
+  background-color: #f2f2f7;
+}
+
+/* Checkbox checked */
+.p-form-checkbox-cont input:checked ~ span {
+  background-color: #007aff;
+  border-color: #007aff;
+}
+
+/* Checkmark */
+.p-form-checkbox-cont span:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Show checkmark when checked */
+.p-form-checkbox-cont input:checked ~ span:after {
+  display: block;
+}
+
+/* Radio container */
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Radio button container */
+.p-form-radio-cont {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Hide default radio */
+.p-form-radio-cont input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom radio */
+.p-form-radio-cont span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #ffffff;
+  border: 1px solid #d1d1d6;
+  border-radius: 50%;
+}
+
+/* Radio hover */
+.p-form-radio-cont:hover input ~ span {
+  background-color: #f2f2f7;
+}
+
+/* Radio checked */
+.p-form-radio-cont input:checked ~ span {
+  background-color: #ffffff;
+  border-color: #007aff;
+}
+
+/* Radio dot */
+.p-form-radio-cont span:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #007aff;
+}
+
+/* Show dot when checked */
+.p-form-radio-cont input:checked ~ span:after {
+  display: block;
+}
+
+/* Date container */
+.date-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Date input */
+.date-container input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 40px;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Date icon */
+.date-container i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8e8e93;
+  pointer-events: none;
+}
+
+/* Time container */
+.time-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Time input */
+.time-container input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 40px;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Time icon */
+.time-container i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8e8e93;
+  pointer-events: none;
+}
+
+/* Signature container */
+.signature-container {
+  width: 100%;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Signature canvas */
+.signature-canvas {
+  width: 100%;
+  height: 200px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #d1d1d6;
+}
+
+/* Signature buttons */
+.signature-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #f2f2f7;
+}
+
+/* Signature button */
+.signature-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #007aff;
+  color: #ffffff;
+  border: none;
+}
+
+.signature-btn:hover {
+  background-color: #0062cc;
+}
+
+/* Clear signature button */
+.js-clear-signature {
+  background-color: #ff3b30;
+}
+
+.js-clear-signature:hover {
+  background-color: #d70015;
+}
+
+/* Submit button container */
+.submit-button-container {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Submit button */
+.submit-request-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #007aff;
+  color: #ffffff;
+  border: none;
+  width: 100%;
+  max-width: 300px;
+}
+
+.submit-request-btn:hover {
+  background-color: #0062cc;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 122, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #007aff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 12px;
+  }
+  
+  .section-header {
+    font-size: 15px;
+  }
+  
+  .p-form-label {
+    font-size: 13px;
+  }
+  
+  .p-form-text,
+  .p-form-select select,
+  .date-container input,
+  .time-container input {
+    font-size: 15px;
+    padding: 10px;
+  }
+  
+  .signature-canvas {
+    height: 150px;
+  }
+}

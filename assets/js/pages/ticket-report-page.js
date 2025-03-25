@@ -381,12 +381,20 @@ const TicketReportPage = {
     const dynamicFormFields = document.querySelector('.js-dynamic-form-fields');
     if (!dynamicFormFields) return;
     
+    // Log form loading start
+    if (window.Logger) {
+      Logger.info('Loading form fields', { formId });
+    }
+    
     // Clear existing fields
     dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Loading form fields...</div></div>';
     
     // If no form is selected, clear the dynamic fields
     if (!formId) {
       dynamicFormFields.innerHTML = '';
+      if (window.Logger) {
+        Logger.warn('No form ID provided');
+      }
       return;
     }
     
@@ -407,14 +415,32 @@ const TicketReportPage = {
         }
         
         if (formData) {
-          console.log('Form details found in global data store:', formData);
+          if (window.Logger) {
+            Logger.info('Form details found in global data store', {
+              formId,
+              formName: formData.name,
+              fieldCount: formData.data ? (Array.isArray(formData.data) ? formData.data.length : 'unknown') : 0
+            });
+          }
+          
           // Use memory-optimized rendering
           this.renderFormFieldsLazy(formData, dynamicFormFields);
         } else {
           // Fallback to API if not found in global data store
+          if (window.Logger) {
+            Logger.info('Fetching form details from API', { formId });
+          }
+          
           TicketService.getForm(formId)
             .then(data => {
-              console.log('Form details fetched from API:', data);
+              if (window.Logger) {
+                Logger.info('Form details fetched from API', {
+                  formId,
+                  formName: data.name,
+                  fieldCount: data.data ? (Array.isArray(data.data) ? data.data.length : 'unknown') : 0,
+                  dataSize: JSON.stringify(data).length
+                });
+              }
               
               // Clear existing fields
               dynamicFormFields.innerHTML = '';
@@ -423,17 +449,31 @@ const TicketReportPage = {
                 // Use memory-optimized rendering
                 this.renderFormFieldsLazy(data, dynamicFormFields);
               } else {
-                console.error('Form data is empty or invalid');
+                if (window.Logger) {
+                  Logger.error('Form data is empty or invalid', { formId });
+                }
                 dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
               }
             })
             .catch(error => {
-              console.error('Error fetching form details:', error);
+              if (window.Logger) {
+                Logger.error('Error fetching form details', {
+                  formId,
+                  error: error.message,
+                  stack: error.stack
+                });
+              }
               dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
             });
         }
       } catch (error) {
-        console.error('Error in loadFormFields:', error);
+        if (window.Logger) {
+          Logger.error('Error in loadFormFields', {
+            formId,
+            error: error.message,
+            stack: error.stack
+          });
+        }
         dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error loading form fields</div></div>';
       }
     }, 100); // Small delay to allow UI to update
@@ -550,6 +590,14 @@ const TicketReportPage = {
   // Memory-optimized lazy loading of form fields
   renderFormFieldsLazy(data, dynamicFormFields) {
     try {
+      // Log rendering start
+      if (window.Logger) {
+        Logger.info('Starting lazy form field rendering', {
+          formName: data.name,
+          formId: data.id
+        });
+      }
+      
       // Clear existing fields
       dynamicFormFields.innerHTML = '';
       
@@ -558,8 +606,18 @@ const TicketReportPage = {
       if (typeof formData === 'string') {
         try {
           formData = JSON.parse(formData);
+          if (window.Logger) {
+            Logger.debug('Parsed form data from string', {
+              dataLength: formData.length
+            });
+          }
         } catch (e) {
-          console.error('Error parsing form data:', e);
+          if (window.Logger) {
+            Logger.error('Error parsing form data', {
+              error: e.message,
+              dataPreview: typeof formData === 'string' ? formData.substring(0, 100) : 'not a string'
+            });
+          }
           formData = [];
         }
       }
@@ -572,6 +630,13 @@ const TicketReportPage = {
         required: field.required,
         options: field.options
       })) : [];
+      
+      if (window.Logger) {
+        Logger.debug('Stored minimal form field data', {
+          fieldCount: this.dynamicFormFields.length,
+          memorySize: JSON.stringify(this.dynamicFormFields).length
+        });
+      }
       
       // Process form data
       if (Array.isArray(formData)) {
@@ -607,6 +672,14 @@ const TicketReportPage = {
           });
         }
         
+        if (window.Logger) {
+          Logger.info('Form structure processed', {
+            sectionCount: sections.length,
+            paragraphCount: paragraphs.length,
+            fieldTypes: this.countFieldTypes(formData)
+          });
+        }
+        
         // Create a container for all sections
         const sectionsContainer = document.createElement('div');
         sectionsContainer.className = 'form-sections-container';
@@ -614,6 +687,15 @@ const TicketReportPage = {
         
         // Render sections in batches to avoid memory issues
         const renderNextBatch = (index = 0, batchSize = 1) => {
+          // Log batch rendering
+          if (window.Logger) {
+            Logger.debug('Rendering batch of sections', {
+              batchIndex: index,
+              batchSize: batchSize,
+              remainingSections: sections.length - index
+            });
+          }
+          
           // Create a document fragment for this batch
           const fragment = document.createDocumentFragment();
           
@@ -630,11 +712,24 @@ const TicketReportPage = {
           
           // If there are more sections to render, schedule the next batch
           if (endIndex < sections.length) {
+            if (window.Logger) {
+              Logger.debug('Scheduling next batch', {
+                nextBatchIndex: endIndex,
+                remainingSections: sections.length - endIndex
+              });
+            }
+            
             setTimeout(() => {
               renderNextBatch(endIndex, batchSize);
             }, 50); // Small delay between batches
           } else {
             // All sections rendered, now render paragraphs
+            if (window.Logger) {
+              Logger.info('All sections rendered, rendering paragraphs', {
+                paragraphCount: paragraphs.length
+              });
+            }
+            
             const paragraphsFragment = document.createDocumentFragment();
             paragraphs.forEach(paragraphText => {
               const paragraphDiv = document.createElement('div');
@@ -649,6 +744,15 @@ const TicketReportPage = {
               paragraphsFragment.appendChild(paragraphDiv);
             });
             sectionsContainer.appendChild(paragraphsFragment);
+            
+            if (window.Logger) {
+              Logger.info('Form rendering completed successfully', {
+                formName: data.name,
+                formId: data.id,
+                totalSections: sections.length,
+                totalParagraphs: paragraphs.length
+              });
+            }
           }
         };
         
@@ -666,9 +770,29 @@ const TicketReportPage = {
         document.querySelector('.js-generate-qr-info-dates').style.display = 'none';
       }
     } catch (error) {
-      console.error('Error in renderFormFieldsLazy:', error);
+      if (window.Logger) {
+        Logger.error('Error in renderFormFieldsLazy', {
+          error: error.message,
+          stack: error.stack,
+          formName: data ? data.name : 'unknown',
+          formId: data ? data.id : 'unknown'
+        });
+      }
       dynamicFormFields.innerHTML = '<div class="row"><div class="label p-form-label">Error rendering form fields</div></div>';
     }
+  },
+  
+  // Count field types for logging
+  countFieldTypes(formData) {
+    const typeCounts = {};
+    if (Array.isArray(formData)) {
+      formData.forEach(field => {
+        if (field.type) {
+          typeCounts[field.type] = (typeCounts[field.type] || 0) + 1;
+        }
+      });
+    }
+    return typeCounts;
   },
   
   // Create a form section with header and fields (returns DOM element)
