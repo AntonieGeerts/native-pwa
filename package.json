@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npx serve .",
-    "build": "npm run copy-capacitor-js && npm run sync",
-    "copy-capacitor-js": "cp node_modules/@capacitor/core/dist/index.js src/assets/js/capacitor-core.js",
+    "prepare:www": "./prepare-www.sh",
+    "build": "npm run prepare:www && npm run copy-capacitor-js && npm run sync",
+    "copy-capacitor-js": "cp node_modules/@capacitor/core/dist/index.js www/assets/js/capacitor-core.js",
     "sync": "npx cap sync",
     "add:android": "npx cap add android",
     "add:ios": "npx cap add ios",
@@ -14,7 +15,16 @@
     "serve:android": "npx cap run android",
     "serve:ios": "npx cap run ios",
     "copy-icons": "./copy-app-icons.sh",
-    "build:with-icons": "npm run build && npm run copy-icons"
+    "build:with-icons": "npm run build && npm run copy-icons",
+    "install:plugins": "npm install && npm run sync",
+    "prepare:android": "npm run build:with-icons && npm run add:android && npm run sync",
+    "prepare:ios": "npm run build:with-icons && npm run add:ios && npm run sync",
+    "prepare:all": "npm run install:plugins && npm run prepare:android && npm run prepare:ios",
+    "update:android": "npx cap update android",
+    "update:ios": "npx cap update ios",
+    "update:all": "npm run update:android && npm run update:ios",
+    "build:android": "npm run build && npm run sync && npm run open:android",
+    "build:ios": "npm run build && npm run sync && npm run open:ios"
   },
   "keywords": [],
   "author": "",
@@ -23,12 +33,27 @@
   "dependencies": {
     "@capacitor/android": "^7.1.0",
     "@capacitor/browser": "^7.0.0",
+    "@capacitor/camera": "^7.0.0",
     "@capacitor/cli": "^7.1.0",
     "@capacitor/core": "^7.1.0",
+    "@capacitor/device": "^7.0.0",
+    "@capacitor/dialog": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/geolocation": "^7.0.0",
+    "@capacitor/haptics": "^7.0.0",
     "@capacitor/ios": "^7.1.0",
-    "@capacitor/preferences": "^7.0.0"
+    "@capacitor/keyboard": "^7.0.0",
+    "@capacitor/local-notifications": "^7.0.0",
+    "@capacitor/network": "^7.0.0",
+    "@capacitor/preferences": "^7.0.0",
+    "@capacitor/push-notifications": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0",
+    "@capacitor/toast": "^7.0.0"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "serve": "^14.2.1",
+    "typescript": "^5.8.2"
   }
 }

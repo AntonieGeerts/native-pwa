@@ -1,29 +1,66 @@
 {
   "appId": "com.managedpmo.app",
-  "appName": "PMO Native App",
+  "appName": "Mandani Bay Community App",
   "webDir": ".",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "cleartext": true,
+    "hostname": "new-app.managedpmo.com",
+    "allowNavigation": [
+      "new-app.managedpmo.com",
+      "app.managedpmo.com",
+      "api.managedpmo.com"
+    ]
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "#7F126E",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
       "showSpinner": true,
       "androidSpinnerStyle": "large",
       "iosSpinnerStyle": "small",
-      "spinnerColor": "#007aff",
+      "spinnerColor": "#ffffff",
       "splashFullScreen": true,
       "splashImmersive": true
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "dark",
+      "resizeOnFullScreen": true
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "CapacitorCookies": {
+      "enabled": true
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#7F126E",
+      "sound": "beep.wav"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
     }
   },
   "ios": {
-    "contentInset": "always"
+    "contentInset": "always",
+    "backgroundColor": "#ffffff",
+    "scheme": "pmoapp",
+    "preferredContentMode": "mobile",
+    "limitsNavigationsToAppBoundDomains": true,
+    "handleApplicationNotifications": true
   },
   "android": {
-    "iconBackground": "#ffffff"
+    "backgroundColor": "#ffffff",
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true,
+    "initialFocus": false,
+    "useLegacyBridge": false,
+    "windowSoftInputMode": "adjustResize"
   }
 }

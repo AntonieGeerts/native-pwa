@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API URL Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    #results {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .success {
+      color: green;
+    }
+    
+    .error {
+      color: red;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>API URL Test</h1>
+  <p>This page tests different API URLs to find the correct one for the Mandani Bay Community App.</p>
+  
+  <button id="run-tests">Run Tests</button>
+  <button id="clear-results">Clear Results</button>
+  
+  <div id="results">Results will appear here...</div>
+  
+  <script>
+    // Override console.log to output to the results div
+    const originalConsoleLog = console.log;
+    console.log = function() {
+      // Call the original console.log
+      originalConsoleLog.apply(console, arguments);
+      
+      // Output to the results div
+      const resultsDiv = document.getElementById('results');
+      const args = Array.from(arguments);
+      
+      // Format the output
+      let line = args.join(' ');
+      
+      // Add colors based on content
+      if (line.includes('Error:') || line.includes('not JSON')) {
+        line = `<span class="error">${line}</span>`;
+      } else if (line.includes('Status: 200') || line.includes('valid JSON')) {
+        line = `<span class="success">${line}</span>`;
+      }
+      
+      resultsDiv.innerHTML += line + '<br>';
+      
+      // Scroll to bottom
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    };
+    
+    // Clear results button
+    document.getElementById('clear-results').addEventListener('click', function() {
+      document.getElementById('results').innerHTML = '';
+    });
+    
+    // Run tests button
+    document.getElementById('run-tests').addEventListener('click', function() {
+      document.getElementById('results').innerHTML = '';
+      runTests();
+    });
+  </script>
+  
+  <!-- API URL Test Script -->
+  <script src="api-url-test.js"></script>
+</body>
+</html>

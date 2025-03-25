@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mandani Bay Community App</string>
+    <string name="title_activity_main">Mandani Bay Community App</string>
+    <string name="package_name">com.managedpmo.app</string>
+    <string name="custom_url_scheme">pmoapp</string>
+</resources>

@@ -1,0 +1,212 @@
+{
+    "form_metadata": {
+      "id": 569,
+      "company_id": 55,
+      "ticket_category_id": 125,
+      "name": "Swimming Pool and Gym Registration and Waiver Form",
+      "created_at": "2021-10-22 09:30:54",
+      "updated_at": "2022-07-14 03:21:40",
+      "instructions": {
+        "purpose": "This JSON provides instructions to generate an HTML form based on the provided JSON data. Implement the form with proper HTML structure, styling, and interactivity as specified.",
+        "styling": {
+          "font_family": "Calibri, sans-serif",
+          "header_font_size": "16pt",
+          "text_font_size": "10pt",
+          "required_indicator": "Add a red asterisk (<span style=\"color: red;\">*</span>) to labels of required fields."
+        },
+        "editable_fields": "Fields with 'unitOwnerEdit: true' are editable by the unit owner; fields with 'pmoEdit: true' are editable by PMO staff. Disable fields for other users based on role.",
+        "dynamic_elements": "For the 'Visitors' grid, include JavaScript to allow adding rows dynamically."
+      }
+    },
+    "form_elements": [
+      {
+        "type": "header",
+        "label": "SWIMMING POOL AND GYM REGISTRATION AND WAIVER FORM",
+        "instructions": "Render as a centered <h1> with font-size: 16pt and font-family: Calibri, sans-serif.",
+        "html_example": "<h1 style=\"text-align: center; font-size: 16pt; font-family: Calibri, sans-serif;\">SWIMMING POOL AND GYM REGISTRATION AND WAIVER FORM</h1>"
+      },
+      {
+        "name": "text-163489657921910555023413151599",
+        "type": "text",
+        "label": "Owner/Tenant Name",
+        "required": true,
+        "unitOwnerEdit": true,
+        "instructions": "Render as a labeled text input. Mark as required.",
+        "html_example": "<label for=\"ownerTenantName\">Owner/Tenant Name <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"ownerTenantName\" name=\"text-163489657921910555023413151599\" required>"
+      },
+      {
+        "name": "unit-16376508904085642275073613212",
+        "type": "unit",
+        "label": "Tower/Floor/Unit",
+        "required": true,
+        "unitOwnerEdit": true,
+        "instructions": "Render as a text input (assuming 'unit' is a text field). Mark as required.",
+        "html_example": "<label for=\"unitDetails\">Tower/Floor/Unit <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"unitDetails\" name=\"unit-16376508904085642275073613212\" required>"
+      },
+      {
+        "name": "thedate-16348965677177955515072679287",
+        "type": "thedate",
+        "label": "Date",
+        "required": true,
+        "unitOwnerEdit": true,
+        "instructions": "Render as a date input. Mark as required.",
+        "html_example": "<label for=\"date\">Date <span style=\"color: red;\">*</span></label><input type=\"date\" id=\"date\" name=\"thedate-16348965677177955515072679287\" required>"
+      },
+      {
+        "name": "grid-16577684356879611607266508357",
+        "type": "grid",
+        "label": "Visitors",
+        "values": [
+          {"label": "Name of Guest/s", "value": "option-1"},
+          {"label": "Age", "value": "option-2"},
+          {"label": "Amount Due", "value": "option-3"}
+        ],
+        "instructions": "Render as a table with input fields for each column. Add JavaScript to allow adding rows dynamically.",
+        "html_example": "<label>Visitors</label><table border=\"1\"><thead><tr><th>Name of Guest/s</th><th>Age</th><th>Amount Due</th></tr></thead><tbody><tr><td><input type=\"text\" name=\"grid-16577684356879611607266508357[0][option-1]\"></td><td><input type=\"number\" name=\"grid-16577684356879611607266508357[0][option-2]\"></td><td><input type=\"text\" name=\"grid-16577684356879611607266508357[0][option-3]\"></td></tr></tbody></table><button onclick=\"addVisitorRow()\">Add Row</button>"
+      },
+      {
+        "name": "text-16577684814333233884232618123",
+        "type": "text",
+        "label": "TOTAL AMOUNT DUE",
+        "instructions": "Render as a text input.",
+        "html_example": "<label for=\"totalAmount\">TOTAL AMOUNT DUE</label><input type=\"text\" id=\"totalAmount\" name=\"text-16577684814333233884232618123\">"
+      },
+      {
+        "type": "paragraph",
+        "label": "Conditions",
+        "content": [
+          "This form shall serve as the official registration of the names listed above for the use of the swimming pool.",
+          "User/s of the pool shall comply with the House Rules and Regulations and existing policies set forth by the Condominium Corporation.",
+          "Mandani Bay Suites Condominium Corporation shall not be held liable for any loss to or for any accident/s that may occur from the action/s of the registered user/s."
+        ],
+        "instructions": "Render as a <h3> heading followed by an unordered list (<ul>) with font-size: 10pt.",
+        "html_example": "<h3><u><b>Conditions</b></u></h3><ul style=\"font-family: Calibri, sans-serif; font-size: 10pt;\"><li>This form shall serve as the official registration...</li><li>User/s of the pool shall comply...</li><li>Mandani Bay Suites Condominium Corporation shall not be held liable...</li></ul>"
+      },
+      {
+        "type": "paragraph",
+        "label": "Swimming Pool Rules & Guidelines",
+        "content": [
+          "Operating hours are strictly from 6:00 am to 9:00 pm for adults & 6:00 am – 6:00 pm for children under the age of twelve (12).",
+          "The swimming pool is reserved for use of Mandani Bay Suites residents and their guests. Guests shall be charged a fee, with the first three (3) guests charged a basic rate and guests in excess of three (3) charged a higher rate.",
+          "All pool users are required to register with the assigned Pool Attendant.",
+          "Pool users are advised to take all necessary safety precautions. The Developer / Condominium Corporation / Property Management Office shall not be liable for any untoward incident, accident, or injury.",
+          "Children under the age of twelve (12) must be accompanied by an adult at all times. Parents / Guardians must accompany and supervise their children.",
+          "Food and drinks shall be strictly prohibited in the pool and pool deck area.",
+          "Proper swimwear is required.",
+          "Water sports and diving are not allowed.",
+          "Expectorating or blowing of nose in the pool is strictly prohibited.",
+          "Persons with contagious diseases, open wounds, etc., will not be allowed in the pool.",
+          "Those who use the swimming pool shall use dry clothes when returning to their units through the elevator."
+        ],
+        "additional_content": "The person signing this waiver must be an adult, and if children are using the pool, it must be signed by a parent or guardian. There is no lifeguard on duty.",
+        "instructions": "Render as a <h3> heading followed by an ordered list (<ol>) with font-size: 10pt. Add the additional content as an italicized paragraph.",
+        "html_example": "<h3><u><b>Swimming Pool Rules & Guidelines</b></u></h3><ol style=\"font-family: Calibri, sans-serif; font-size: 10pt;\"><li>Operating hours are strictly from...</li>...</ol><p style=\"font-style: italic; font-size: 10pt;\">The person signing this waiver must be an adult...</p>"
+      },
+      {
+        "type": "paragraph",
+        "label": "Gym Rules and Guidelines",
+        "content": [
+          "Operating hours are strictly from 6:00 am to 10:00 pm. No extensions allowed.",
+          "The gym is reserved for the exclusive use of Mandani Bay Suites unit owners and their guests.",
+          "Guests shall be charged a fee of P 200 per guest. Maximum 2 guests per use.",
+          "All users must register at the PMO and pay dues for guests.",
+          "Users are advised to take safety precautions. A medical certificate may be requested.",
+          "Seek assistance from the PMO for equipment issues.",
+          "Children 18 years and below are strictly not allowed.",
+          "Proper gym attire shall be worn.",
+          "No banging of weights; return weights to racks.",
+          "Please sanitize after use.",
+          "No entry during weekly maintenance of gym equipment."
+        ],
+        "instructions": "Render as a <h3> heading followed by numbered <div> elements with font-size: 10pt.",
+        "html_example": "<h3><u><b>Gym Rules and Guidelines</b></u></h3><div style=\"font-family: Calibri, sans-serif; font-size: 10pt;\"><div>1. Operating hours are strictly from...</div><div>2. The gym is reserved...</div>...</div>"
+      },
+      {
+        "type": "paragraph",
+        "label": "WAIVER",
+        "content": [
+          "I, [Owner/Tenant Name], unit owner of Unit No. [Tower/Floor/Unit], hereby declare that I have read and understood the rules and regulations for the use of the amenities above mentioned.",
+          "I shall release the Developer, its officers, Board of Directors, Property Management team, and Vendors from any liabilities and claims arising from myself and my guests' use of the amenities, including personal injuries, accidents, or damages.",
+          "I understand that any violation of the guidelines and House Rules shall have a corresponding penalty charged to my account.",
+          "This waiver applies to all guests, children, and visitors I bring to the premises.",
+          "The person signing this waiver must be of legal age (18+) and have the necessary power of attorney."
+        ],
+        "instructions": "Render as a <h3> heading followed by <div> elements with font-size: 10pt. Use <u> tags for placeholders and italicize the last line.",
+        "html_example": "<h3>WAIVER</h3><div style=\"font-family: Calibri, sans-serif; font-size: 10pt;\"><div>I, <u>[Owner/Tenant Name]</u>, unit owner of Unit No. <u>[Tower/Floor/Unit]</u>, hereby declare...</div><div><i>The person signing this waiver must be of legal age...</i></div></div>"
+      },
+      {
+        "name": "signature-16349537614753729547954027106",
+        "type": "signature",
+        "label": "Signature",
+        "required": true,
+        "unitOwnerEdit": true,
+        "instructions": "Render as a labeled signature input (text or canvas). Mark as required.",
+        "html_example": "<label for=\"signature\">Signature <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"signature\" name=\"signature-16349537614753729547954027106\" required>"
+      },
+      {
+        "name": "text-165776882556040508154945448527",
+        "type": "text",
+        "label": "Requested by: Unit Owner/Tenant Name",
+        "instructions": "Render as a labeled text input.",
+        "html_example": "<label for=\"requestedBy\">Requested by: Unit Owner/Tenant Name</label><input type=\"text\" id=\"requestedBy\" name=\"text-165776882556040508154945448527\">"
+      },
+      {
+        "type": "header",
+        "label": "For PMO input:",
+        "instructions": "Render as a <h2> subheading.",
+        "html_example": "<h2>For PMO input:</h2>"
+      },
+      {
+        "name": "text-16378228691349029340465731035",
+        "type": "text",
+        "label": "Checked by: Lifeguard",
+        "pmoEdit": true,
+        "required": true,
+        "instructions": "Render as a labeled text input, editable by PMO. Mark as required.",
+        "html_example": "<label for=\"lifeguard\">Checked by: Lifeguard <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"lifeguard\" name=\"text-16378228691349029340465731035\" required>"
+      },
+      {
+        "name": "text-163782289193814480844358456801",
+        "type": "text",
+        "label": "Checked by: Admin Assistant",
+        "pmoEdit": true,
+        "required": true,
+        "instructions": "Render as a labeled text input, editable by PMO. Mark as required.",
+        "html_example": "<label for=\"adminAssistant\">Checked by: Admin Assistant <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"adminAssistant\" name=\"text-163782289193814480844358456801\" required>"
+      },
+      {
+        "name": "text-16378229187585252016204153127",
+        "type": "text",
+        "label": "Endorsed by: Billing Clerk",
+        "pmoEdit": true,
+        "required": true,
+        "instructions": "Render as a labeled text input, editable by PMO. Mark as required.",
+        "html_example": "<label for=\"billingClerk\">Endorsed by: Billing Clerk <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"billingClerk\" name=\"text-16378229187585252016204153127\" required>"
+      },
+      {
+        "name": "text-163782292400129350550860422286",
+        "type": "text",
+        "label": "Approved by: PM/BE",
+        "pmoEdit": true,
+        "required": true,
+        "instructions": "Render as a labeled text input, editable by PMO. Mark as required.",
+        "html_example": "<label for=\"pmbe\">Approved by: PM/BE <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"pmbe\" name=\"text-163782292400129350550860422286\" required>"
+      },
+      {
+        "name": "text-16577688784303255442547912626",
+        "type": "text",
+        "label": "Monitored by: Security Guard",
+        "instructions": "Render as a labeled text input.",
+        "html_example": "<label for=\"securityGuard\">Monitored by: Security Guard</label><input type=\"text\" id=\"securityGuard\" name=\"text-16577688784303255442547912626\">"
+      },
+      {
+        "name": "signature-1637822999749020744423696681835",
+        "type": "signature",
+        "label": "Signature",
+        "pmoEdit": true,
+        "required": true,
+        "instructions": "Render as a labeled signature input (text or canvas), editable by PMO. Mark as required.",
+        "html_example": "<label for=\"pmoSignature\">Signature <span style=\"color: red;\">*</span></label><input type=\"text\" id=\"pmoSignature\" name=\"signature-1637822999749020744423696681835\" required>"
+      }
+    ]
+  }

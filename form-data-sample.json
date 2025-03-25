@@ -1,0 +1,226 @@
+{
+  "extractedAt": "2025-03-25T10:28:40.000Z",
+  "categories": [
+    {
+      "id": 1,
+      "name": "Facilities",
+      "forms": [
+        {
+          "id": 101,
+          "name": "Swimming Pool",
+          "fieldCount": 15,
+          "fieldTypeCounts": {
+            "text": 5,
+            "paragraph": 4,
+            "header": 2,
+            "select": 2,
+            "checkbox": 1,
+            "radio": 1
+          },
+          "fields": [
+            {
+              "name": "pool_name",
+              "type": "text",
+              "label": "Pool Name",
+              "required": true
+            },
+            {
+              "name": "pool_description",
+              "type": "paragraph",
+              "label": "Pool Description",
+              "required": false
+            },
+            {
+              "name": "pool_section_1",
+              "type": "header",
+              "label": "Pool Information",
+              "required": false
+            },
+            {
+              "name": "pool_type",
+              "type": "select",
+              "label": "Pool Type",
+              "required": true
+            },
+            {
+              "name": "pool_size",
+              "type": "text",
+              "label": "Pool Size",
+              "required": true
+            },
+            {
+              "name": "pool_depth",
+              "type": "text",
+              "label": "Pool Depth",
+              "required": true
+            },
+            {
+              "name": "pool_capacity",
+              "type": "text",
+              "label": "Pool Capacity",
+              "required": true
+            },
+            {
+              "name": "pool_section_2",
+              "type": "header",
+              "label": "Pool Maintenance",
+              "required": false
+            },
+            {
+              "name": "pool_maintenance_info",
+              "type": "paragraph",
+              "label": "Pool maintenance is essential for ensuring the safety and cleanliness of the swimming pool. Regular maintenance includes checking water quality, cleaning filters, and ensuring proper chemical balance.",
+              "required": false
+            },
+            {
+              "name": "pool_maintenance_frequency",
+              "type": "select",
+              "label": "Maintenance Frequency",
+              "required": true
+            },
+            {
+              "name": "pool_chemicals",
+              "type": "checkbox",
+              "label": "Chemical Treatment Required",
+              "required": false
+            },
+            {
+              "name": "pool_heating",
+              "type": "radio",
+              "label": "Pool Heating",
+              "required": false
+            },
+            {
+              "name": "pool_safety_info",
+              "type": "paragraph",
+              "label": "Safety is paramount when operating a swimming pool. Ensure that all safety equipment is in place and functioning properly. This includes life preservers, first aid kits, and emergency contact information.",
+              "required": false
+            },
+            {
+              "name": "pool_regulations",
+              "type": "paragraph",
+              "label": "All pool users must adhere to the posted regulations. These regulations are designed to ensure the safety and enjoyment of all pool users. Failure to comply with these regulations may result in removal from the pool area.",
+              "required": false
+            },
+            {
+              "name": "pool_notes",
+              "type": "text",
+              "label": "Additional Notes",
+              "required": false
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "name": "Gym Equipment",
+          "fieldCount": 8,
+          "fieldTypeCounts": {
+            "text": 3,
+            "paragraph": 1,
+            "header": 1,
+            "select": 2,
+            "checkbox": 1
+          },
+          "fields": [
+            {
+              "name": "equipment_name",
+              "type": "text",
+              "label": "Equipment Name",
+              "required": true
+            },
+            {
+              "name": "equipment_section",
+              "type": "header",
+              "label": "Equipment Details",
+              "required": false
+            },
+            {
+              "name": "equipment_type",
+              "type": "select",
+              "label": "Equipment Type",
+              "required": true
+            },
+            {
+              "name": "equipment_condition",
+              "type": "select",
+              "label": "Equipment Condition",
+              "required": true
+            },
+            {
+              "name": "equipment_location",
+              "type": "text",
+              "label": "Equipment Location",
+              "required": true
+            },
+            {
+              "name": "equipment_maintenance",
+              "type": "checkbox",
+              "label": "Maintenance Required",
+              "required": false
+            },
+            {
+              "name": "equipment_notes",
+              "type": "text",
+              "label": "Additional Notes",
+              "required": false
+            },
+            {
+              "name": "equipment_safety",
+              "type": "paragraph",
+              "label": "Please ensure all equipment is used safely and according to manufacturer guidelines. Report any issues immediately.",
+              "required": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Work Permit",
+      "forms": [
+        {
+          "id": 201,
+          "name": "General Work Permit",
+          "fieldCount": 5,
+          "fieldTypeCounts": {
+            "text": 3,
+            "select": 1,
+            "date": 1
+          },
+          "fields": [
+            {
+              "name": "permit_number",
+              "type": "text",
+              "label": "Permit Number",
+              "required": true
+            },
+            {
+              "name": "permit_type",
+              "type": "select",
+              "label": "Permit Type",
+              "required": true
+            },
+            {
+              "name": "permit_date",
+              "type": "date",
+              "label": "Permit Date",
+              "required": true
+            },
+            {
+              "name": "permit_location",
+              "type": "text",
+              "label": "Work Location",
+              "required": true
+            },
+            {
+              "name": "permit_description",
+              "type": "text",
+              "label": "Work Description",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,7 @@ The ticket-report-mobile.html page was experiencing the following issues:
 1. **Form fields rendering oddly** - The styling of form fields was inconsistent and not optimized for mobile devices
 2. **Memory issues on mobile** - The app was crashing with "Out of Memory" errors when loading complex forms
 3. **Performance degradation** - The app became unresponsive when rendering large forms with many fields
+4. **Loading animation issues** - The CSS animation for the loading spinner was causing memory issues on mobile devices
 
 ## Solution Implemented
 
@@ -146,7 +147,58 @@ Logger.init({
 });
 ```
 
-### 4. Styling Improvements
+### 4. Loading Animation Optimization
+
+The loading animation was identified as a potential cause of memory issues on mobile devices. The following optimizations were implemented:
+
+- Replaced CSS animations with static loading messages on mobile devices
+- Added device detection to use different loading approaches based on device type
+- Increased timeout delays for mobile devices to give them more time to process data
+- Disabled CSS animations on mobile devices to prevent memory issues
+
+```javascript
+// Check if we're on a mobile device
+const isMobileDevice = window.CapacitorApp ?
+  window.CapacitorApp.isNativePlatform() :
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+if (isMobileDevice) {
+  // Simple text loading for mobile to avoid animation-related memory issues
+  const loadingMessage = document.createElement('div');
+  loadingMessage.className = 'row';
+  loadingMessage.innerHTML = '<div class="label p-form-label">Loading form fields, please wait...</div>';
+  dynamicFormFields.appendChild(loadingMessage);
+} else {
+  // Use animated spinner only for desktop browsers
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.className = 'loading-indicator';
+  loadingIndicator.innerHTML = '<div class="spinner"></div>';
+  dynamicFormFields.appendChild(loadingIndicator);
+}
+```
+
+Added CSS to disable animations on mobile:
+
+```css
+/* Disable animations on mobile to prevent memory issues */
+@media (max-width: 768px) {
+  .spinner {
+    animation: none !important;
+    border: 2px solid #007aff;
+    border-radius: 50%;
+  }
+}
+
+/* Reduce animation complexity for low-end devices */
+@media (max-width: 480px) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+```
+
+### 5. Styling Improvements
 
 - Used consistent styling for form fields
 - Improved mobile responsiveness
