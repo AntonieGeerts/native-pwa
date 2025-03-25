@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dashboard - PMO Native App</title>
+  <meta name="description" content="Dashboard - PMO Native App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-left">
+        <button id="menu-toggle" class="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div class="header-title">
+        Dashboard
+      </div>
+      <div class="header-right">
+        <button id="notifications-button" class="notifications-button">
+          <span class="icon">🔔</span>
+        </button>
+      </div>
+    </header>
+    
+    <nav id="side-menu" class="side-menu">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img src="assets/images/icons/icon-placeholder.html" alt="User Avatar" id="user-avatar">
+        </div>
+        <div class="user-info">
+          <div id="user-name">Loading...</div>
+          <div id="user-role">Loading...</div>
+        </div>
+      </div>
+      
+      <ul class="menu-items">
+        <li class="active"><a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="profile.html"><span class="icon">👤</span> Profile</a></li>
+        <li><a href="settings.html"><span class="icon">⚙️</span> Settings</a></li>
+        <li><a href="#" id="logout-button"><span class="icon">🚪</span> Logout</a></li>
+      </ul>
+      
+      <div class="menu-footer">
+        <button id="install-button" class="btn btn-secondary" style="display: none;">Install App</button>
+      </div>
+    </nav>
+    
+    <main class="main-content">
+      <div class="dashboard-welcome">
+        <h1>Welcome, <span id="welcome-name">User</span>!</h1>
+        <p>This is your PMO Native App dashboard.</p>
+      </div>
+      
+      <div class="dashboard-cards">
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Analytics</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📝</div>
+          <div class="card-title">Tasks</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📅</div>
+          <div class="card-title">Calendar</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📢</div>
+          <div class="card-title">Announcements</div>
+        </div>
+      </div>
+      
+      <div class="network-status" id="network-status"></div>
+    </main>
+  </div>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      const token = localStorage.getItem('pwa_token');
+      if (!token) {
+        // Not authenticated, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Load user data
+      const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+      
+      // Update UI with user data
+      document.getElementById('user-name').textContent = userData.name || 'User';
+      document.getElementById('user-role').textContent = userData.role || 'Member';
+      document.getElementById('welcome-name').textContent = userData.name || 'User';
+      
+      // Set up menu toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const sideMenu = document.getElementById('side-menu');
+      const app = document.getElementById('app');
+      
+      menuToggle.addEventListener('click', function() {
+        app.classList.toggle('menu-open');
+      });
+      
+      // Set up logout
+      document.getElementById('logout-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Call logout function
+        if (window.Auth && window.Auth.logout) {
+          window.Auth.logout()
+            .then(() => {
+              // Redirect to login
+              window.location.href = 'login.html';
+            })
+            .catch(error => {
+              console.error('Logout error:', error);
+              
+              // Still redirect to login even if API call fails
+              window.location.href = 'login.html';
+            });
+        } else {
+          // Clear local storage
+          localStorage.removeItem('pwa_token');
+          localStorage.removeItem('user_data');
+          
+          // Redirect to login
+          window.location.href = 'login.html';
+        }
+      });
+    });
+  </script>
+  
+  <style>
+    .menu-footer {
+      padding: 16px;
+      border-top: 1px solid var(--divider-color);
+      margin-top: auto;
+    }
+    
+    .btn-secondary {
+      background-color: var(--accent-color);
+      color: white;
+      width: 100%;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #e91e63;
+    }
+  </style>
+</body>
+</html>

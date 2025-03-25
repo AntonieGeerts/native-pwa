@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Navigation - Mandani Bay Community App</title>
+  <meta name="description" content="Navigation - Mandani Bay Community App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    /* Navigation page specific styles */
+    .navigation-container {
+      padding: 20px;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .nav-containers {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    
+    @media (min-width: 768px) {
+      .nav-containers {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .nav-containers {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .nav-container {
+      height: 134px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .nav-container:hover, .nav-container:active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .nav-container a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: var(--text-color);
+      padding: 16px;
+    }
+    
+    .nav-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 12px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .title {
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    /* Navigation Icons */
+    .request-icon {
+      background-image: url('assets/images/icons/request-icon.svg');
+      background-color: rgba(127, 18, 110, 0.1); /* Deep Purple */
+      border-radius: 12px;
+    }
+    
+    .billing-icon {
+      background-image: url('assets/images/icons/billing-icon.svg');
+      background-color: rgba(240, 128, 0, 0.1); /* Vibrant Orange */
+      border-radius: 12px;
+    }
+    
+    .parcel-icon {
+      background-image: url('assets/images/icons/parcel-icon.svg');
+      background-color: rgba(61, 61, 61, 0.1); /* Charcoal Gray */
+      border-radius: 12px;
+    }
+    
+    .updates-events-icon {
+      background-image: url('assets/images/icons/news-events-icon.svg');
+      background-color: rgba(127, 18, 110, 0.1); /* Deep Purple */
+      border-radius: 12px;
+    }
+    
+    .promotions-icon {
+      background-image: url('assets/images/icons/promotions-icon.svg');
+      background-color: rgba(240, 128, 0, 0.1); /* Vibrant Orange */
+      border-radius: 12px;
+    }
+    
+    .my-account-icon {
+      background-image: url('assets/images/icons/my-account-icon.svg');
+      background-color: rgba(61, 61, 61, 0.1); /* Charcoal Gray */
+      border-radius: 12px;
+    }
+    
+    .estate-info-icon {
+      background-image: url('assets/images/icons/estate-info-icon.svg');
+      background-color: rgba(127, 18, 110, 0.1); /* Deep Purple */
+      border-radius: 12px;
+    }
+    
+    .useful-hotline-icon {
+      background-image: url('assets/images/icons/useful-hotline-icon.svg');
+      background-color: rgba(240, 128, 0, 0.1); /* Vibrant Orange */
+      border-radius: 12px;
+    }
+    
+    /* Fallback icons using Font Awesome */
+    .request-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+    
+    .billing-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent-color);
+    }
+    
+    .parcels-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--text-color);
+    }
+    
+    .updates-events-marketplace-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+    
+    .promotions-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent-color);
+    }
+    
+    .my-account-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--text-color);
+    }
+    
+    .estate-info-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+    
+    .useful-hotline-container .nav-icon.fallback {
+      background-image: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent-color);
+    }
+    
+    /* Swipe instruction */
+    .swipe-instruction {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      padding: 16px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .two-arrow-left-icon {
+      display: flex;
+      margin-right: 10px;
+    }
+    
+    .fa-chevron-left {
+      color: var(--primary-color);
+      margin-right: -8px;
+    }
+    
+    .fa-chevron-left.left1 {
+      animation: blinker 1s linear infinite;
+      animation-delay: 0.1s;
+    }
+    
+    .fa-chevron-left.left2 {
+      animation: blinker 1s linear infinite;
+    }
+    
+    @keyframes blinker {
+      50% {
+        opacity: 0.5;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <div class="header-action" id="settings-button">
+        <i class="fas fa-cog"></i>
+      </div>
+      <div class="app-title">
+        Mandani Bay Community App
+      </div>
+      <div class="header-action" id="notifications-button">
+        <i class="fas fa-bell"></i>
+      </div>
+    </header>
+    
+    <div class="navigation-container">
+      <div class="nav-containers">
+        <div class="request-container nav-container">
+          <a href="requests.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="title">Requests</div>
+          </a>
+        </div>
+        
+        <div class="billing-container nav-container">
+          <a href="billings.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div class="title">Billing</div>
+          </a>
+        </div>
+        
+        <div class="parcels-container nav-container">
+          <a href="parcel.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-box"></i>
+            </div>
+            <div class="title">My Parcels</div>
+          </a>
+        </div>
+        
+        <div class="updates-events-marketplace-container nav-container">
+          <a href="news.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-newspaper"></i>
+            </div>
+            <div class="title">Updates, Events & Marketplace</div>
+          </a>
+        </div>
+        
+        <div class="promotions-container nav-container">
+          <a href="promos.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-tags"></i>
+            </div>
+            <div class="title">Promotions</div>
+          </a>
+        </div>
+        
+        <div class="my-account-container nav-container">
+          <a href="profile.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="title">My Account</div>
+          </a>
+        </div>
+        
+        <div class="estate-info-container nav-container">
+          <a href="estate-info.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-building"></i>
+            </div>
+            <div class="title">Estate Info</div>
+          </a>
+        </div>
+        
+        <div class="useful-hotline-container nav-container">
+          <a href="useful-hotline.html">
+            <div class="nav-icon fallback">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div class="title">Useful Hotline</div>
+          </a>
+        </div>
+      </div>
+      
+      <div class="swipe-instruction">
+        <div class="two-arrow-left-icon">
+          <i class="fas fa-chevron-left left1"></i>
+          <i class="fas fa-chevron-left left2"></i>
+        </div>
+        <span>Swipe for QR Access</span>
+      </div>
+    </div>
+    
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <a href="#" class="tab-item active">
+        <div class="tab-icon">
+          <i class="fas fa-th-large"></i>
+        </div>
+        <div class="tab-label">Menu</div>
+      </a>
+      <a href="menu-mobile.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="tab-label">QR Code</div>
+      </a>
+      <a href="share-qr.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="tab-label">Share</div>
+      </a>
+      <a href="notifications.html" class="tab-item" id="notifications-tab">
+        <div class="tab-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="tab-label">Notifications</div>
+        <div class="badge" id="notification-badge" style="display: none;">0</div>
+      </a>
+    </nav>
+    
+    <!-- Settings Menu -->
+    <div class="ppt-modal" id="settings-modal">
+      <div class="ppt-modal-content">
+        <div class="ppt-modal-header">
+          <h3>Settings</h3>
+          <button class="ppt-modal-close" id="close-settings-btn">&times;</button>
+        </div>
+        <div class="ppt-modal-body">
+          <ul class="ppt-list">
+            <li class="ppt-list-item">
+              <a href="profile.html" class="ppt-list-link">
+                <i class="fas fa-user"></i> My Account
+              </a>
+            </li>
+            <li class="ppt-list-item">
+              <a href="settings.html" class="ppt-list-link">
+                <i class="fas fa-cog"></i> App Settings
+              </a>
+            </li>
+            <li class="ppt-list-item">
+              <a href="#" id="dark-mode-toggle" class="ppt-list-link">
+                <i class="fas fa-moon"></i> Dark Mode
+                <div class="ppt-switch">
+                  <input type="checkbox" id="dark-mode-switch">
+                  <span class="ppt-slider round"></span>
+                </div>
+              </a>
+            </li>
+            <li class="ppt-list-item">
+              <a href="logout-action.html" class="ppt-list-link text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+  <!-- Hammer.js for swipe gestures -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      const token = localStorage.getItem('pwa_token');
+      if (!token) {
+        // Not authenticated, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Check for notifications
+      checkNotifications();
+      
+      // Check dark mode preference
+      checkDarkMode();
+      
+      // Initialize swipe gesture
+      initSwipeGesture();
+    });
+    
+    function setupEventListeners() {
+      // Settings button
+      const settingsButton = document.getElementById('settings-button');
+      if (settingsButton) {
+        settingsButton.addEventListener('click', function() {
+          const settingsModal = document.getElementById('settings-modal');
+          if (settingsModal) {
+            settingsModal.classList.add('ppt-modal-active');
+          }
+        });
+      }
+      
+      // Close settings button
+      const closeSettingsBtn = document.getElementById('close-settings-btn');
+      if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', function() {
+          const settingsModal = document.getElementById('settings-modal');
+          if (settingsModal) {
+            settingsModal.classList.remove('ppt-modal-active');
+          }
+        });
+      }
+      
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          const darkModeSwitch = document.getElementById('dark-mode-switch');
+          if (darkModeSwitch) {
+            darkModeSwitch.checked = !darkModeSwitch.checked;
+            toggleDarkMode(darkModeSwitch.checked);
+          }
+        });
+      }
+    }
+    
+    function checkNotifications() {
+      const notificationCount = localStorage.getItem('notification_count');
+      const badge = document.getElementById('notification-badge');
+      
+      if (badge) {
+        if (notificationCount && parseInt(notificationCount) > 0) {
+          badge.textContent = notificationCount;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+    
+    function checkDarkMode() {
+      const darkModeEnabled = localStorage.getItem('dark_mode') === 'true';
+      const darkModeSwitch = document.getElementById('dark-mode-switch');
+      
+      if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        if (darkModeSwitch) {
+          darkModeSwitch.checked = true;
+        }
+      } else {
+        document.body.classList.remove('dark-mode');
+        if (darkModeSwitch) {
+          darkModeSwitch.checked = false;
+        }
+      }
+    }
+    
+    function toggleDarkMode(enabled) {
+      if (enabled) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('dark_mode', 'true');
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('dark_mode', 'false');
+      }
+    }
+    
+    function initSwipeGesture() {
+      // Initialize Hammer.js on the navigation container
+      const element = document.querySelector('.navigation-container');
+      if (!element) return;
+      
+      const hammertime = new Hammer(element);
+      hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+      
+      hammertime.on('swipe', function(event) {
+        if (event.deltaX < 0) {
+          // Swipe left - go to QR code page
+          window.location.href = 'menu-mobile.html';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

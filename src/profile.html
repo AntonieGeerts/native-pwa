@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Profile - PMO Native App</title>
+  <meta name="description" content="User Profile - PMO Native App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-left">
+        <button id="menu-toggle" class="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div class="header-title">
+        Profile
+      </div>
+      <div class="header-right">
+        <button id="notifications-button" class="notifications-button">
+          <span class="icon">🔔</span>
+        </button>
+      </div>
+    </header>
+    
+    <nav id="side-menu" class="side-menu">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img src="assets/images/icons/icon-placeholder.html" alt="User Avatar" id="user-avatar">
+        </div>
+        <div class="user-info">
+          <div id="user-name">Loading...</div>
+          <div id="user-role">Loading...</div>
+        </div>
+      </div>
+      
+      <ul class="menu-items">
+        <li><a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li class="active"><a href="profile.html"><span class="icon">👤</span> Profile</a></li>
+        <li><a href="settings.html"><span class="icon">⚙️</span> Settings</a></li>
+        <li><a href="#" id="logout-button"><span class="icon">🚪</span> Logout</a></li>
+      </ul>
+    </nav>
+    
+    <main class="main-content">
+      <div class="profile-container">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <img src="assets/images/icons/icon-placeholder.html" alt="User Avatar" id="profile-avatar">
+            <button class="change-avatar-button">Change</button>
+          </div>
+          <div class="profile-info">
+            <h1 id="profile-name">Loading...</h1>
+            <p id="profile-role">Loading...</p>
+          </div>
+        </div>
+        
+        <div class="profile-form">
+          <h2>Personal Information</h2>
+          
+          <div class="form-group">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" placeholder="Enter your full name">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email address">
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter your phone number">
+          </div>
+          
+          <div class="form-group">
+            <label for="unit-number">Unit Number</label>
+            <input type="text" id="unit-number" placeholder="Enter your unit number">
+          </div>
+          
+          <div class="form-group">
+            <button id="save-profile-button" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+        
+        <div class="profile-section">
+          <h2>Change Password</h2>
+          
+          <div class="form-group">
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" placeholder="Enter your current password">
+          </div>
+          
+          <div class="form-group">
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" placeholder="Enter your new password">
+          </div>
+          
+          <div class="form-group">
+            <label for="confirm-password">Confirm New Password</label>
+            <input type="password" id="confirm-password" placeholder="Confirm your new password">
+          </div>
+          
+          <div class="form-group">
+            <button id="change-password-button" class="btn btn-primary">Change Password</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      const token = localStorage.getItem('pwa_token');
+      if (!token) {
+        // Not authenticated, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Load user data
+      const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+      
+      // Update UI with user data
+      document.getElementById('user-name').textContent = userData.name || 'User';
+      document.getElementById('user-role').textContent = userData.role || 'Member';
+      document.getElementById('profile-name').textContent = userData.name || 'User';
+      document.getElementById('profile-role').textContent = userData.role || 'Member';
+      
+      // Fill form fields with user data
+      document.getElementById('full-name').value = userData.name || '';
+      document.getElementById('email').value = userData.email || '';
+      document.getElementById('phone').value = userData.phone || '';
+      document.getElementById('unit-number').value = userData.unit_number || '';
+      
+      // Set up menu toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const app = document.getElementById('app');
+      
+      menuToggle.addEventListener('click', function() {
+        app.classList.toggle('menu-open');
+      });
+      
+      // Set up logout
+      document.getElementById('logout-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Call logout function
+        if (window.Auth && window.Auth.logout) {
+          window.Auth.logout()
+            .then(() => {
+              // Redirect to login
+              window.location.href = 'login.html';
+            })
+            .catch(error => {
+              console.error('Logout error:', error);
+              
+              // Still redirect to login even if API call fails
+              window.location.href = 'login.html';
+            });
+        } else {
+          // Clear local storage
+          localStorage.removeItem('pwa_token');
+          localStorage.removeItem('user_data');
+          
+          // Redirect to login
+          window.location.href = 'login.html';
+        }
+      });
+      
+      // Handle save profile button
+      document.getElementById('save-profile-button').addEventListener('click', function() {
+        const fullName = document.getElementById('full-name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const unitNumber = document.getElementById('unit-number').value;
+        
+        // Validate form
+        if (!fullName || !email) {
+          alert('Please enter your full name and email address');
+          return;
+        }
+        
+        // Show loading state
+        this.disabled = true;
+        this.textContent = 'Saving...';
+        
+        // Make API request to update profile
+        fetch('/app/api/main/users/my_account_edit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: fullName,
+            email: email,
+            phone: phone,
+            unit_number: unitNumber
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to update profile');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Profile updated:', data);
+          
+          // Update user data in localStorage
+          const updatedUserData = {
+            ...userData,
+            name: fullName,
+            email: email,
+            phone: phone,
+            unit_number: unitNumber
+          };
+          
+          localStorage.setItem('user_data', JSON.stringify(updatedUserData));
+          
+          // Update UI
+          document.getElementById('user-name').textContent = fullName;
+          document.getElementById('profile-name').textContent = fullName;
+          
+          // Show success message
+          alert('Profile updated successfully');
+          
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Save Changes';
+        })
+        .catch(error => {
+          console.error('Profile update error:', error);
+          alert('Failed to update profile. Please try again.');
+          
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Save Changes';
+        });
+      });
+      
+      // Handle change password button
+      document.getElementById('change-password-button').addEventListener('click', function() {
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        // Validate form
+        if (!currentPassword || !newPassword || !confirmPassword) {
+          alert('Please fill in all password fields');
+          return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+          alert('New passwords do not match');
+          return;
+        }
+        
+        // Show loading state
+        this.disabled = true;
+        this.textContent = 'Changing...';
+        
+        // Make API request to change password
+        fetch('/app/api/auth/change-my-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to change password');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Password changed:', data);
+          
+          // Clear password fields
+          document.getElementById('current-password').value = '';
+          document.getElementById('new-password').value = '';
+          document.getElementById('confirm-password').value = '';
+          
+          // Show success message
+          alert('Password changed successfully');
+          
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Change Password';
+        })
+        .catch(error => {
+          console.error('Password change error:', error);
+          alert('Failed to change password. Please check your current password and try again.');
+          
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Change Password';
+        });
+      });
+    });
+  </script>
+  
+  <style>
+    .profile-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 24px;
+      position: relative;
+      background-color: var(--primary-light);
+    }
+    
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .change-avatar-button {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .profile-info h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+    }
+    
+    .profile-info p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    
+    .profile-form, .profile-section {
+      background-color: var(--card-color);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .profile-form h2, .profile-section h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 600px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</body>
+</html>

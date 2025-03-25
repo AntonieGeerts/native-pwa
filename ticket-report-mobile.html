@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Create Request - Mandani Bay Community App</title>
+  <meta name="description" content="Create Request - Mandani Bay Community App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    /* Create Ticket page specific styles */
+    .header-title {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background-color: var(--primary-color);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .back-btn {
+      margin-right: 16px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+    
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .create-ticket-container {
+      padding: 16px;
+    }
+    
+    /* Collapsible */
+    .collapsible {
+      border: none;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+    
+    .collapsible-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    
+    .collapsible-header span {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .collapsible-body {
+      padding: 0 16px 16px;
+      display: none;
+    }
+    
+    .active .collapsible-body {
+      display: block;
+    }
+    
+    .active .collapsible-header i {
+      transform: rotate(180deg);
+    }
+    
+    /* Form Elements */
+    .row {
+      margin-bottom: 24px;
+    }
+    
+    .label {
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .select-container {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    
+    .select-container select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+      appearance: none;
+    }
+    
+    .select-container i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    
+    .text-container input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+    
+    .textarea-container textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .date-container {
+      position: relative;
+    }
+    
+    .date-container input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+    
+    .date-container i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    
+    .time-container {
+      position: relative;
+    }
+    
+    .time-container input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+    
+    .time-container i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    
+    .checkbox-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    
+    /* Next Button */
+    .btn-next {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 16px auto;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-next i {
+      font-size: 24px;
+    }
+    
+    /* Pulse Animation */
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(127, 18, 110, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(127, 18, 110, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(127, 18, 110, 0);
+      }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Grid */
+    .grid-container {
+      margin-bottom: 16px;
+    }
+    
+    .grid-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .grid-container th {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--divider-color);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .grid-container td {
+      padding: 12px;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    
+    .grid-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--divider-color);
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+    
+    .actions-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    
+    .add-grid-row, .delete-grid-row {
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+    
+    .delete-grid-row {
+      color: #da848c;
+    }
+    
+    /* Comment Section */
+    .comment-section {
+      margin-top: 32px;
+    }
+    
+    .comment-label {
+      font-weight: 600;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    
+    .comments {
+      margin-bottom: 16px;
+    }
+    
+    .comment {
+      background-color: var(--card-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .comment .name {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .comment .comment-data {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    
+    .comment .date {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .comment-input {
+      margin-top: 16px;
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+    
+    .comment-submit-btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    
+    /* Action Buttons */
+    .action-button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+    
+    .incident-button {
+      flex: 1;
+      margin: 0 8px;
+    }
+    
+    .incident-button a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: var(--text-color);
+    }
+    
+    .incident-button a span:first-child {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    
+    /* Submit Button */
+    .submit-button-container {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+    
+    .submit-request-btn {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .submit-request-btn:hover, .submit-request-btn:active {
+      background-color: var(--primary-dark);
+    }
+    
+    /* Signature */
+    .signature-container {
+      margin-bottom: 16px;
+    }
+    
+    .signature-canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .signature-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .signature-btn {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    
+    /* Hidden Elements */
+    .js-hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-title">
+    <div class="back-btn" id="back-btn">
+      <i class="fas fa-arrow-left"></i>
+    </div>
+    <div class="page-title">Create Request</div>
+  </div>
+  
+  <div class="create-ticket-container">
+    <form id="ticket-form">
+      <ul class="collapsible" id="counter">
+        <li class="active" name="default-section">
+          <div class="collapsible-header"><span>Create Ticket</span><span><i class="fas fa-caret-down"></i></span></div>
+          <div class="collapsible-body">
+            <div class="row">
+              <div class="label">Category&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container">
+                <select name="ticket_category_id" id="ticket_category_id" class="js-valid-required" data-thefieldname="Category">
+                  <option value="">Choose category</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="label">Form Type&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container">
+                <select name="ticket_form_id" id="ticket_form_id" class="js-valid-required" data-thefieldname="Form">
+                  <option value="">Choose form</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="label">Status&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="select-container">
+                <select name="ticket_status" id="ticket_status" class="js-valid-required" data-thefieldname="Status">
+                  <option value="">Choose status</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            
+            <div class="row js-billing-info-container" style="display:none">
+              <div class="label">Description&nbsp;<span style="color:#da848c">*</span></div>
+              <div class="textarea-field">
+                <div class="js-billing-info-html"></div>  
+              </div>
+            </div>
+            
+            <div class="row js-generate-qr-info-visitors" style="display: none;">
+              <div class="label">Visitors</div>
+              <div class="grid-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span class="grid-edit"></span>
+                        <input class="grid-input" type="text">
+                      </td>
+                      <td>
+                        <span class="grid-edit"></span>
+                        <input class="grid-input" type="text">
+                      </td>
+                      <td>
+                        <div class="actions-container">
+                          <i class="far fa-minus-circle delete-grid-row" style="display: none;"></i>
+                          <i class="far fa-plus-circle add-grid-row"></i>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="row js-generate-qr-info-dates" style="display: none;">
+              <div class="label">Dates of visit</div>
+              <div class="date-container">
+                <input type="text" class="datepicker" id="visit-dates" multiple>
+                <i class="far fa-calendar-alt"></i>
+              </div>
+            </div>
+            
+            <div class="js-dynamic-form-fields"></div>
+            
+            <div class="row center-align">
+              <div class="btn-next btn-container btn-floating pulse"><i class="fas fa-angle-double-down"></i></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="comment-section">
+        <div class="comment-label">Comments</div>
+        <div class="comments" id="comments-container">
+          <!-- Comments will be inserted here by JavaScript -->
+        </div>
+        <div class="comment-input">
+          <div class="textarea-container"> 
+            <textarea class="materialize-textarea" id="comment-text"></textarea>       
+          </div>
+          <div class="button-container">
+            <a href="#" class="comment-submit-btn" id="comment-submit-btn">Submit</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="action-button-container">
+        <div class="incident-button btn-container">
+          <a href="#" class="take-photo-btn" id="take-photo-btn">
+            <span><i class="fas fa-camera"></i></span>
+            <span>Take Photo</span>
+          </a>
+          <input id="camera-input" type="file" accept="image/*" capture="environment" style="display: none;">
+        </div>
+        <div class="incident-button btn-container">
+          <a href="#" class="upload-photo-btn" id="upload-photo-btn">
+            <span><i class="fas fa-images"></i></span>
+            <span>Upload</span>
+          </a>
+          <input id="file-input" type="file" multiple accept="image/*" style="display: none;">
+        </div>
+      </div>
+      
+      <div class="submit-button-container">
+        <button type="button" class="submit-request-btn" id="submit-request-btn">Submit Request</button>
+      </div>
+    </form>
+    
+    <div class="js-hidden">
+      <canvas class="js-temp-canvas"></canvas>
+      <canvas class="js-temp-canvas-thumbnail"></canvas>
+      <img class="js-photo-thumbnail">
+      <img class="js-temp-photo">
+      <div class="js-images"></div>
+      <div class="js-thumbnails"></div>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  
+  <!-- Lodash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  
+  <!-- Signature Pad -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  
+  <!-- Flatpickr for date/time pickers -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <!-- Services -->
+  <script src="assets/js/services/api-service.js"></script>
+  <script src="assets/js/services/ticket-service.js"></script>
+  
+  <!-- Page-specific script -->
+  <script src="assets/js/pages/ticket-report-page.js"></script>
+</body>
+</html>

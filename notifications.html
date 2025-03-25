@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Notifications - PMO Native App</title>
+  <meta name="description" content="Notifications - PMO Native App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    /* Apple-like styles for notifications page */
+    :root {
+      --app-background: #f5f5f7;
+      --card-background: #ffffff;
+      --primary-color: #007aff;
+      --secondary-color: #5ac8fa;
+      --text-color: #1d1d1f;
+      --text-secondary: #86868b;
+      --border-color: #d2d2d7;
+      --success-color: #34c759;
+      --warning-color: #ff9500;
+      --danger-color: #ff3b30;
+    }
+    
+    body.dark-mode {
+      --app-background: #1d1d1f;
+      --card-background: #2c2c2e;
+      --text-color: #f5f5f7;
+      --text-secondary: #86868b;
+      --border-color: #38383a;
+    }
+    
+    body {
+      background-color: var(--app-background);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .container {
+      max-width: 100%;
+      padding: 0;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .app-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .app-title {
+      font-size: 17px;
+      font-weight: 600;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .header-action {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 22px;
+      color: var(--primary-color);
+    }
+    
+    /* Content area (to avoid tab bar overlap) */
+    .content-area {
+      padding: 0 0 70px;
+      flex: 1;
+    }
+    
+    /* Notifications */
+    .notifications-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .notification-item {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--card-background);
+      transition: background-color 0.2s;
+    }
+    
+    .notification-item.unread {
+      background-color: rgba(0, 122, 255, 0.05);
+    }
+    
+    .notification-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .notification-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 18px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 16px;
+    }
+    
+    .notification-title {
+      font-size: 15px;
+      font-weight: 600;
+      flex: 1;
+    }
+    
+    .notification-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .notification-content {
+      font-size: 14px;
+      color: var(--text-color);
+      margin-left: 48px;
+      margin-bottom: 8px;
+    }
+    
+    .notification-actions {
+      display: flex;
+      margin-left: 48px;
+    }
+    
+    .notification-action {
+      font-size: 13px;
+      color: var(--primary-color);
+      margin-right: 16px;
+      text-decoration: none;
+    }
+    
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    
+    .empty-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .empty-message {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 300px;
+      margin-bottom: 24px;
+    }
+    
+    /* Tab Bar */
+    .tab-bar {
+      display: flex;
+      background-color: var(--card-background);
+      border-top: 1px solid var(--border-color);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      z-index: 100;
+    }
+    
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 10px;
+      padding: 8px 0;
+    }
+    
+    .tab-item.active {
+      color: var(--primary-color);
+    }
+    
+    .tab-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    
+    .tab-label {
+      font-weight: 500;
+    }
+    
+    .badge {
+      position: absolute;
+      top: 6px;
+      right: calc(25% - 18px);
+      background-color: var(--danger-color);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+    
+    /* Segmented control */
+    .segmented-control-container {
+      padding: 16px;
+      background-color: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    /* Loading indicator */
+    .loading-indicator {
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+    
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(0, 122, 255, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <div class="header-action" id="back-button">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="app-title">Notifications</div>
+      <div class="header-action" id="mark-all-read-button">
+        <i class="fas fa-check-double"></i>
+      </div>
+    </header>
+    
+    <div class="segmented-control-container">
+      <div class="ppt-segmented-control">
+        <button class="ppt-segmented-control-btn active" data-filter="all">All</button>
+        <button class="ppt-segmented-control-btn" data-filter="unread">Unread</button>
+      </div>
+    </div>
+    
+    <div class="content-area">
+      <div id="loading-indicator" class="loading-indicator">
+        <div class="spinner"></div>
+      </div>
+      
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-icon">
+          <i class="fas fa-bell-slash"></i>
+        </div>
+        <div class="empty-title">No Notifications</div>
+        <div class="empty-message">You don't have any notifications at the moment. We'll notify you when something new arrives.</div>
+      </div>
+      
+      <ul id="notifications-list" class="notifications-list" style="display: none;">
+        <!-- Notifications will be inserted here by JavaScript -->
+      </ul>
+    </div>
+    
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <a href="navigation.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-th-large"></i>
+        </div>
+        <div class="tab-label">Menu</div>
+      </a>
+      <a href="menu-mobile.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="tab-label">QR Code</div>
+      </a>
+      <a href="share-qr.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="tab-label">Share</div>
+      </a>
+      <a href="#" class="tab-item active" id="notifications-tab">
+        <div class="tab-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="tab-label">Notifications</div>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      const token = localStorage.getItem('pwa_token');
+      if (!token) {
+        // Not authenticated, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Fetch notifications
+      fetchNotifications();
+      
+      // Check dark mode preference
+      checkDarkMode();
+    });
+    
+    function setupEventListeners() {
+      // Back button
+      const backButton = document.getElementById('back-button');
+      if (backButton) {
+        backButton.addEventListener('click', function() {
+          window.history.back();
+        });
+      }
+      
+      // Mark all as read button
+      const markAllReadButton = document.getElementById('mark-all-read-button');
+      if (markAllReadButton) {
+        markAllReadButton.addEventListener('click', function() {
+          markAllAsRead();
+        });
+      }
+      
+      // Segmented control
+      const segmentedControlButtons = document.querySelectorAll('.ppt-segmented-control-btn');
+      segmentedControlButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          segmentedControlButtons.forEach(btn => btn.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          // Filter notifications
+          filterNotifications(this.dataset.filter);
+        });
+      });
+    }
+    
+    function fetchNotifications() {
+      // Show loading indicator
+      document.getElementById('loading-indicator').style.display = 'flex';
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('notifications-list').style.display = 'none';
+      
+      // Fetch notifications from API
+      fetch('/app/api/notifications', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('pwa_token')}`,
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch notifications');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Notifications fetched:', data);
+        
+        // Hide loading indicator
+        document.getElementById('loading-indicator').style.display = 'none';
+        
+        // Update notification count
+        if (data && typeof data.unread_count !== 'undefined') {
+          localStorage.setItem('notification_count', data.unread_count);
+        }
+        
+        // Check if there are notifications
+        if (!data || !data.notifications || data.notifications.length === 0) {
+          // Show empty state
+          document.getElementById('empty-state').style.display = 'flex';
+          return;
+        }
+        
+        // Render notifications
+        renderNotifications(data.notifications);
+        
+        // Show notifications list
+        document.getElementById('notifications-list').style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Error fetching notifications:', error);
+        
+        // Hide loading indicator
+        document.getElementById('loading-indicator').style.display = 'none';
+        
+        // Show empty state with error message
+        document.getElementById('empty-state').style.display = 'flex';
+        document.querySelector('.empty-title').textContent = 'Error Loading Notifications';
+        document.querySelector('.empty-message').textContent = 'There was a problem loading your notifications. Please try again later.';
+      });
+    }
+    
+    function renderNotifications(notifications) {
+      const notificationsList = document.getElementById('notifications-list');
+      notificationsList.innerHTML = '';
+      
+      // Create notification items
+      notifications.forEach(notification => {
+        const notificationItem = document.createElement('li');
+        notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+        notificationItem.dataset.id = notification.id;
+        notificationItem.dataset.read = notification.read ? 'true' : 'false';
+        
+        // Determine icon based on notification type
+        let iconClass = 'fas fa-bell';
+        switch (notification.type) {
+          case 'billing':
+            iconClass = 'fas fa-file-invoice-dollar';
+            break;
+          case 'event':
+            iconClass = 'fas fa-calendar-alt';
+            break;
+          case 'announcement':
+            iconClass = 'fas fa-bullhorn';
+            break;
+          case 'request':
+            iconClass = 'fas fa-clipboard-list';
+            break;
+        }
+        
+        // Format time
+        const notificationTime = formatNotificationTime(notification.created_at);
+        
+        notificationItem.innerHTML = `
+          <div class="notification-header">
+            <div class="notification-icon">
+              <i class="${iconClass}"></i>
+            </div>
+            <div class="notification-title">${notification.title}</div>
+            <div class="notification-time">${notificationTime}</div>
+          </div>
+          <div class="notification-content">${notification.message}</div>
+          <div class="notification-actions">
+            <a href="#" class="notification-action mark-read-action" data-id="${notification.id}">
+              ${notification.read ? 'Mark as unread' : 'Mark as read'}
+            </a>
+            ${notification.link ? `<a href="${notification.link}" class="notification-action">View</a>` : ''}
+          </div>
+        `;
+        
+        notificationsList.appendChild(notificationItem);
+        
+        // Add click event for mark as read/unread
+        const markReadAction = notificationItem.querySelector('.mark-read-action');
+        if (markReadAction) {
+          markReadAction.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const isRead = notificationItem.dataset.read === 'true';
+            toggleReadStatus(id, isRead);
+          });
+        }
+        
+        // Add click event for notification item
+        notificationItem.addEventListener('click', function(e) {
+          // Don't trigger if clicking on an action
+          if (e.target.closest('.notification-action')) {
+            return;
+          }
+          
+          // Mark as read if unread
+          if (this.dataset.read === 'false') {
+            const id = this.dataset.id;
+            toggleReadStatus(id, false);
+          }
+          
+          // Navigate to link if available
+          if (notification.link) {
+            window.location.href = notification.link;
+          }
+        });
+      });
+    }
+    
+    function formatNotificationTime(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHour = Math.floor(diffMin / 60);
+      const diffDay = Math.floor(diffHour / 24);
+      
+      if (diffSec < 60) {
+        return 'Just now';
+      } else if (diffMin < 60) {
+        return `${diffMin}m ago`;
+      } else if (diffHour < 24) {
+        return `${diffHour}h ago`;
+      } else if (diffDay < 7) {
+        return `${diffDay}d ago`;
+      } else {
+        return date.toLocaleDateString();
+      }
+    }
+    
+    function toggleReadStatus(id, isCurrentlyRead) {
+      // Update UI immediately
+      const notificationItem = document.querySelector(`.notification-item[data-id="${id}"]`);
+      if (notificationItem) {
+        if (isCurrentlyRead) {
+          // Mark as unread
+          notificationItem.classList.add('unread');
+          notificationItem.dataset.read = 'false';
+          notificationItem.querySelector('.mark-read-action').textContent = 'Mark as read';
+          
+          // Update notification count
+          const currentCount = parseInt(localStorage.getItem('notification_count') || '0');
+          localStorage.setItem('notification_count', currentCount + 1);
+        } else {
+          // Mark as read
+          notificationItem.classList.remove('unread');
+          notificationItem.dataset.read = 'true';
+          notificationItem.querySelector('.mark-read-action').textContent = 'Mark as unread';
+          
+          // Update notification count
+          const currentCount = parseInt(localStorage.getItem('notification_count') || '0');
+          localStorage.setItem('notification_count', Math.max(0, currentCount - 1));
+        }
+      }
+      
+      // Send API request to update status
+      fetch(`/app/api/notifications/${id}/${isCurrentlyRead ? 'unread' : 'read'}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('pwa_token')}`,
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update notification status');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Notification status updated:', data);
+      })
+      .catch(error => {
+        console.error('Error updating notification status:', error);
+        
+        // Revert UI changes on error
+        if (notificationItem) {
+          if (isCurrentlyRead) {
+            // Revert to read
+            notificationItem.classList.remove('unread');
+            notificationItem.dataset.read = 'true';
+            notificationItem.querySelector('.mark-read-action').textContent = 'Mark as unread';
+            
+            // Update notification count
+            const currentCount = parseInt(localStorage.getItem('notification_count') || '0');
+            localStorage.setItem('notification_count', Math.max(0, currentCount - 1));
+          } else {
+            // Revert to unread
+            notificationItem.classList.add('unread');
+            notificationItem.dataset.read = 'false';
+            notificationItem.querySelector('.mark-read-action').textContent = 'Mark as read';
+            
+            // Update notification count
+            const currentCount = parseInt(localStorage.getItem('notification_count') || '0');
+            localStorage.setItem('notification_count', currentCount + 1);
+          }
+        }
+      });
+    }
+    
+    function markAllAsRead() {
+      // Get all unread notifications
+      const unreadItems = document.querySelectorAll('.notification-item.unread');
+      if (unreadItems.length === 0) {
+        return;
+      }
+      
+      // Update UI immediately
+      unreadItems.forEach(item => {
+        item.classList.remove('unread');
+        item.dataset.read = 'true';
+        const markReadAction = item.querySelector('.mark-read-action');
+        if (markReadAction) {
+          markReadAction.textContent = 'Mark as unread';
+        }
+      });
+      
+      // Update notification count
+      localStorage.setItem('notification_count', '0');
+      
+      // Send API request to mark all as read
+      fetch('/app/api/notifications/mark-all-read', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('pwa_token')}`,
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to mark all notifications as read');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('All notifications marked as read:', data);
+      })
+      .catch(error => {
+        console.error('Error marking all notifications as read:', error);
+        
+        // Revert UI changes on error
+        unreadItems.forEach(item => {
+          item.classList.add('unread');
+          item.dataset.read = 'false';
+          const markReadAction = item.querySelector('.mark-read-action');
+          if (markReadAction) {
+            markReadAction.textContent = 'Mark as read';
+          }
+        });
+        
+        // Update notification count
+        localStorage.setItem('notification_count', unreadItems.length.toString());
+      });
+    }
+    
+    function filterNotifications(filter) {
+      const notificationItems = document.querySelectorAll('.notification-item');
+      
+      notificationItems.forEach(item => {
+        if (filter === 'all') {
+          item.style.display = 'block';
+        } else if (filter === 'unread') {
+          item.style.display = item.classList.contains('unread') ? 'block' : 'none';
+        }
+      });
+      
+      // Check if there are any visible notifications
+      const visibleItems = document.querySelectorAll('.notification-item[style="display: block"]');
+      if (visibleItems.length === 0) {
+        // Show empty state with appropriate message
+        document.getElementById('empty-state').style.display = 'flex';
+        document.querySelector('.empty-title').textContent = filter === 'unread' ? 'No Unread Notifications' : 'No Notifications';
+        document.querySelector('.empty-message').textContent = filter === 'unread' ? 'You have read all your notifications.' : 'You don\'t have any notifications at the moment.';
+      } else {
+        document.getElementById('empty-state').style.display = 'none';
+      }
+    }
+    
+    function checkDarkMode() {
+      const darkModeEnabled = localStorage.getItem('dark_mode') === 'true';
+      
+      if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    }
+  </script>
+</body>
+</html>

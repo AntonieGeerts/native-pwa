@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login - Mandani Bay Community App</title>
+  <meta name="description" content="Login to Mandani Bay Community App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    /* Login page specific styles */
+    .mandani-logo {
+      width: 180px;
+      height: auto;
+      margin-bottom: 24px;
+    }
+    
+    .app-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="login-container">
+      <div class="logo">
+        <img src="assets/images/mandani_logo.png" alt="Mandani Bay Logo" class="mandani-logo">
+      </div>
+      
+      <div class="app-title">Mandani Bay Community App</div>
+      
+      <div class="login-form">
+        <h1>Login</h1>
+        
+        <div class="form-group">
+          <label for="username">Username / Unit Number</label>
+          <input type="text" id="username" placeholder="Enter username or unit number">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter password">
+        </div>
+        
+        <div class="form-group">
+          <button id="login-button" class="btn btn-primary">Login</button>
+        </div>
+        
+        <div class="form-group terms-checkbox">
+          <label>
+            <input type="checkbox" id="terms-checkbox">
+            <span>By using this app you agree to the <a href="#" id="terms-link">Terms and Conditions</a> and <a href="https://www.managedpmo.com/privacy-policy" target="_blank">Privacy Policy</a></span>
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <a href="forgot-password.html" class="forgot-password-link">Forgot your password?</a>
+        </div>
+        
+        <div class="form-group" id="install-button-container" style="display: none;">
+          <button id="install-button" class="btn btn-secondary">Install App</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginButton = document.getElementById('login-button');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const termsCheckbox = document.getElementById('terms-checkbox');
+      
+      loginButton.addEventListener('click', function() {
+        // Validate form
+        if (!usernameInput.value || !passwordInput.value) {
+          alert('Please enter both username and password');
+          return;
+        }
+        
+        if (!termsCheckbox.checked) {
+          alert('Please agree to the Terms and Conditions and Privacy Policy');
+          return;
+        }
+        
+        // Show loading state
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
+        
+        // Perform login
+        login(usernameInput.value, passwordInput.value)
+          .then(response => {
+            console.log('Login successful:', response);
+            
+            // Store the pwa_token in localStorage
+            if (response.pwa_token) {
+              localStorage.setItem('pwa_token', response.pwa_token);
+            }
+            
+            // Store user data
+            if (response.user) {
+              localStorage.setItem('user_data', JSON.stringify(response.user));
+            }
+            
+            // Redirect to menu-mobile page instead of dashboard
+            window.location.href = 'menu-mobile.html';
+          })
+          .catch(error => {
+            console.error('Login error:', error);
+            alert('Login failed: ' + error.message);
+            
+            // Reset button state
+            loginButton.disabled = false;
+            loginButton.textContent = 'Login';
+          });
+      });
+    });
+  </script>
+</body>
+</html>

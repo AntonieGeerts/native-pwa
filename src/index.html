@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PMO Native App</title>
+  <meta name="description" content="PMO Native App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="splash-screen">
+      <div class="logo">
+        <img src="assets/images/logo.html" alt="PMO Logo" id="logo-placeholder">
+      </div>
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    // Redirect to login page if not authenticated
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      const token = localStorage.getItem('pwa_token');
+      
+      // Wait a bit to show splash screen
+      setTimeout(() => {
+        if (!token) {
+          // Not logged in, redirect to login page
+          window.location.href = 'login.html';
+        } else {
+          // Logged in, redirect to dashboard
+          window.location.href = 'dashboard.html';
+        }
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
