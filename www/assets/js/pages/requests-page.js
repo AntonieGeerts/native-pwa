@@ -24,8 +24,19 @@ const RequestsPage = {
     // Initialize tabs
     this.initTabs();
     
-    // Fetch and render requests
-    this.fetchAndRenderRequests();
+    // Wait for Capacitor to be ready before fetching data
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+      // Use Capacitor's built-in readiness listener if available, otherwise fallback
+      // For simplicity, we'll use a small delay, but a proper event listener is better
+      console.log('Native platform detected, delaying initial fetch slightly...');
+      setTimeout(() => {
+        console.log('Attempting initial fetch after delay.');
+        this.fetchAndRenderRequests();
+      }, 500); // Delay to allow plugins to initialize (adjust if needed)
+    } else {
+      // Fetch immediately for non-native environments
+      this.fetchAndRenderRequests();
+    }
     
     // Initialize swipe gesture
     this.initSwipeGesture();

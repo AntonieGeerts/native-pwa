@@ -258,6 +258,7 @@ button {
   display: flex;
   align-items: center;
   padding: 0 16px;
+  padding-top: env(safe-area-inset-top); /* Add safe area padding */
   position: relative;
   z-index: 10;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -432,7 +433,8 @@ button {
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-  padding-bottom: 72px; /* Space for bottom navigation if needed */
+  /* Adjust padding for tab bar height and safe area */
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
 }
 
 /* Dashboard */
@@ -482,7 +484,7 @@ button {
 
 /* Profile Card */
 .profile-card {
-  margin: 16px;
+  margin: 16px 16px 0; /* Removed bottom margin */
   background-color: var(--card-color);
   border-radius: 12px;
   overflow: hidden;
@@ -545,7 +547,7 @@ button {
 
 /* Points Card */
 .points-card {
-  margin: 0 16px 16px;
+  margin: 0 16px 0; /* Removed bottom margin */
   background-color: var(--card-color);
   border-radius: 12px;
   overflow: hidden;
@@ -589,7 +591,7 @@ button {
 
 /* QR Code Card */
 .qr-card {
-  margin: 0 16px 16px;
+  margin: 16px 16px 70px 16px; /* Increased bottom margin to avoid tab bar overlap */
   background-color: var(--card-color);
   border-radius: 12px;
   overflow: hidden;
@@ -601,8 +603,8 @@ button {
 }
 
 .qr-code {
-  width: 200px;
-  height: 200px;
+  width: 100px; /* Reduced size by 50% */
+  height: 100px; /* Reduced size by 50% */
   background-color: #ffffff;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -631,7 +633,8 @@ button {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom)); /* Adjust height for safe area */
+  padding-bottom: env(safe-area-inset-bottom); /* Add safe area padding */
   z-index: 100;
 }
 
@@ -679,7 +682,8 @@ button {
 
 /* Content area (to avoid tab bar overlap) */
 .content-area {
-  padding-bottom: 70px;
+  /* Adjust padding for tab bar height and safe area - Set to 0px as requested */
+  padding-bottom: 0px;
 }
 
 /* QR Focus Modal */

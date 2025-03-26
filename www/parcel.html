@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>My Parcels - Mandani Bay Community App</title>
+  <meta name="description" content="Track your incoming parcels - Mandani Bay Community App">
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    /* Parcel page specific styles */
+    .header-container {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding-top: env(safe-area-inset-top); /* Add safe area padding */
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn {
+      margin-right: 16px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .main-content {
+      padding: 16px;
+      /* Adjust padding for tab bar height and safe area */
+      padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+
+    /* Filters (Optional - similar to requests) */
+    .filters-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .searchbar-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-parcel {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+
+    .searchbar-container i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    /* Parcel List */
+    .parcel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .parcel-card {
+      background-color: var(--card-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+     .parcel-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     }
+
+    .parcel-card a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .parcel-header {
+      padding: 8px 16px;
+      background-color: #666666; /* Default Grey for status */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .parcel-status {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+     .parcel-date-received {
+         color: white;
+         font-size: 12px;
+         opacity: 0.8;
+     }
+
+    /* Status Colors */
+    .parcel-header.status-received { background-color: #43A047; } /* Success Green */
+    .parcel-header.status-claimed { background-color: #757575; } /* Grey */
+    .parcel-header.status-pending,
+    .parcel-header.status-unclaimed { background-color: #F08000; } /* Accent Orange */
+
+
+    .parcel-body {
+      padding: 16px;
+    }
+
+    .parcel-info {
+      margin-bottom: 12px;
+    }
+
+    .parcel-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .parcel-tracking-id,
+    .parcel-sender {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .parcel-tracking-id {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    /* Preloader */
+    .preloader-container {
+      display: none; /* Hidden by default */
+      padding: 24px;
+      text-align: center;
+    }
+
+    .preloader-photo {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto;
+      border: 4px solid rgba(127, 18, 110, 0.3); /* Primary color light */
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <div class="back-btn" id="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="page-title">My Parcels</div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="filters-container">
+        <div class="searchbar-container">
+          <input type="search" class="search-parcel" id="search-keyword" placeholder="Search by Tracking ID or Sender">
+          <i class="fas fa-search"></i>
+        </div>
+        <!-- Add filter button if needed -->
+      </div>
+
+      <div class="parcel-list" id="parcel-list">
+        <!-- Parcel cards will be inserted here by JavaScript -->
+      </div>
+
+      <div class="preloader-container" id="parcel-preloader">
+        <div class="preloader-photo"></div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <a href="navigation.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-th-large"></i>
+        </div>
+        <div class="tab-label">Menu</div>
+      </a>
+      <a href="menu-mobile.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="tab-label">QR Code</div>
+      </a>
+      <a href="share-qr.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="tab-label">Share</div>
+      </a>
+      <a href="notifications.html" class="tab-item" id="notifications-tab">
+        <div class="tab-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="tab-label">Notifications</div>
+        <div class="badge" id="notification-badge" style="display: none;">0</div>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Parcel Card Template -->
+  <template id="parcel-card-template">
+    <div class="parcel-card" data-id="">
+      <a href="#"> <!-- Link will be set by JS to parcel-detail.html?id=... -->
+        <div class="parcel-header">
+          <span class="parcel-status">STATUS</span>
+          <span class="parcel-date-received">Date Received</span>
+        </div>
+        <div class="parcel-body">
+          <div class="parcel-info">
+            <span class="parcel-label">Tracking ID</span>
+            <span class="parcel-tracking-id">TRACKING_ID</span>
+          </div>
+          <div class="parcel-info">
+            <span class="parcel-label">Sender</span>
+            <span class="parcel-sender">SENDER_NAME</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </template>
+
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+  <!-- Lodash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <!-- Hammer.js for swipe gestures -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+
+  <!-- Capacitor Initialization -->
+  <script src="assets/js/capacitor-init.js?v=20250325"></script>
+
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+
+  <!-- Services -->
+  <script src="assets/js/services/api-service.js"></script>
+  <!-- Add other necessary services if needed -->
+
+  <!-- Page-specific script -->
+  <script src="assets/js/pages/parcel-page.js"></script>
+
+  <script>
+    // Basic back button functionality
+    document.getElementById('back-btn').addEventListener('click', function() {
+      window.history.back();
+    });
+
+    // Check authentication on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuth(); // Assumes checkAuth() is defined in auth.js and handles redirection
+        // Initialize page-specific JS if needed after auth check
+        // e.g., if (isAuthenticated()) { initParcelPage(); }
+    });
+  </script>
+</body>
+</html>

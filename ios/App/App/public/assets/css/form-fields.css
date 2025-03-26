@@ -1,0 +1,253 @@
+/**
+ * Form Fields CSS
+ * Optimized for mobile and desktop
+ */
+
+/* Form container */
+.form-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  font-family: Calibri, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Row styling */
+.row {
+  margin-bottom: 16px;
+  position: relative;
+  width: 100%;
+}
+
+/* Label styling */
+.label, .p-form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Required field indicator */
+.label span, .p-form-label span {
+  color: #da848c;
+  margin-left: 4px;
+}
+
+/* Text inputs */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="number"],
+input[type="tel"],
+textarea,
+select,
+.p-form-text {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  font-family: Calibri, 'Segoe UI', Roboto, Arial, sans-serif;
+  transition: border-color 0.2s ease;
+}
+
+/* Focus states */
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+input[type="password"]:focus, 
+input[type="number"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus,
+.p-form-text:focus {
+  border-color: #7F126E;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(127, 18, 110, 0.2);
+}
+
+/* Textarea */
+textarea, textarea.p-form-text {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Select dropdown */
+select, select.p-form-text {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* Date and time inputs */
+.date-container, .time-container {
+  position: relative;
+  width: 100%;
+}
+
+.date-container i, .time-container i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+}
+
+/* Checkbox and radio styling */
+input[type="checkbox"], input[type="radio"] {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.checkbox-label, .radio-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* Paragraph styling */
+.paragraph-container {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.paragraph-header {
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #333;
+}
+
+.paragraph-content {
+  line-height: 1.5;
+  color: #444;
+}
+
+.paragraph-content p {
+  margin-bottom: 12px;
+}
+
+.paragraph-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.paragraph-list li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.truncation-note {
+  font-style: italic;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .row {
+    margin-bottom: 12px;
+  }
+  
+  .label, .p-form-label {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"], 
+  input[type="number"],
+  input[type="tel"],
+  textarea,
+  select,
+  .p-form-text {
+    padding: 8px 10px;
+    font-size: 15px;
+  }
+  
+  .paragraph-header {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .paragraph-list {
+    padding-left: 16px;
+  }
+  
+  /* Horizontal scrolling for wide content */
+  .paragraph-content {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  
+  /* Limit paragraph height on mobile */
+  .paragraph-content {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+/* Error states */
+.error-message {
+  color: #da848c;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}
+
+input.error, 
+textarea.error, 
+select.error,
+.p-form-text.error {
+  border-color: #da848c;
+}
+
+/* Loading state */
+.form-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.form-loading-spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(127, 18, 110, 0.2);
+  border-radius: 50%;
+  border-top-color: #7F126E;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Simplified form for mobile */
+.simplified-form-notice {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.simplified-form-notice p {
+  margin-bottom: 8px;
+}
+
+.simplified-form-notice p:last-child {
+  margin-bottom: 0;
+}

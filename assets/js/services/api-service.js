@@ -26,6 +26,32 @@ const ApiService = {
   },
   
   /**
+   * Get full URL for an endpoint (for use in native apps)
+   * @param {string} endpoint - The API endpoint
+   * @returns {string} The full URL
+   */
+  getFullUrl(endpoint) {
+    // Check if running in a native app
+    const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+    
+    // Always use absolute URL for native apps, relative URL for web
+    if (isNative) {
+      // For native apps, ensure we have a full URL
+      const baseUrl = 'https://new-app.managedpmo.com';
+      // Remove any leading slashes from the endpoint
+      const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+      
+      // Add a timestamp to prevent caching issues
+      const timestamp = Date.now();
+      const separator = cleanEndpoint.includes('?') ? '&' : '?';
+      return `${baseUrl}/${cleanEndpoint}${separator}_t=${timestamp}`;
+    } else {
+      // For web, we can use relative URLs
+      return endpoint;
+    }
+  },
+  
+  /**
    * Get auth token with fallbacks
    * @returns {string} The authentication token
    */
@@ -50,12 +76,24 @@ const ApiService = {
    */
   getHeaders() {
     const token = this.getToken();
-    return {
+    const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+    
+    // Basic headers for all requests
+    const headers = {
       'pwa_token': token,
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     };
+    
+    // Add cache control headers for native apps to prevent caching issues
+    if (isNative) {
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+      headers['Pragma'] = 'no-cache';
+      headers['Expires'] = '0';
+    }
+    
+    return headers;
   },
   
   /**
@@ -79,8 +117,11 @@ const ApiService = {
         console.warn(`[${requestId}] No authentication token available for request to ${endpoint}`);
       }
       
+      // Get the full URL for the request
+      const fullUrl = this.getFullUrl(`${this.baseUrl}${endpoint}`);
+      
       // Enhanced logging for debugging
-      console.log(`[${requestId}] Making API request to: ${this.baseUrl}${endpoint}`, {
+      console.log(`[${requestId}] Making API request to: ${fullUrl}`, {
         isMobile: isMobileDevice,
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
@@ -91,7 +132,7 @@ const ApiService = {
       if (window.Logger && endpoint.includes('/ticket/ticket-form/') && isMobileDevice) {
         Logger.info(`[${requestId}] Mobile form request details`, {
           endpoint: endpoint,
-          fullUrl: `${this.baseUrl}${endpoint}`,
+          fullUrl: fullUrl,
           headers: JSON.stringify(this.getHeaders()),
           timestamp: new Date().toISOString(),
           memoryUsage: window.performance && window.performance.memory ?
@@ -104,7 +145,7 @@ const ApiService = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), isMobileDevice ? 30000 : 60000); // 30s timeout for mobile
       
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      const response = await fetch(fullUrl, {
         method: 'GET',
         headers: this.getHeaders(),
         cache: 'no-store',
@@ -137,9 +178,35 @@ const ApiService = {
         }
       }
       
-      // Parse response with timing
+      // Parse response with timing and enhanced error handling
       const parseStartTime = performance.now();
-      const data = await response.json();
+      
+      // First get the raw text to check if it's HTML
+      const responseText = await response.text();
+      let data;
+      
+      // Check if the response is HTML (starts with <!DOCTYPE or <html)
+      if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
+        console.error(`[${requestId}] Received HTML instead of JSON. First 200 chars:`, responseText.substring(0, 200));
+        
+        // If returnEmptyOnError is true, return the empty value instead of throwing
+        if (options.returnEmptyOnError) {
+          console.warn(`[${requestId}] Returning empty data for ${endpoint} due to HTML response`);
+          return options.emptyValue || {};
+        }
+        
+        throw new Error('Server returned HTML instead of JSON. This usually indicates a routing or server configuration issue.');
+      }
+      
+      // Try to parse as JSON
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error(`[${requestId}] Failed to parse response as JSON:`, parseError);
+        console.log(`[${requestId}] Raw response (first 200 chars):`, responseText.substring(0, 200));
+        throw new Error(`Failed to parse response as JSON: ${parseError.message}. Check server response format.`);
+      }
+      
       const parseTime = performance.now() - parseStartTime;
       
       if (isMobileDevice && window.Logger && endpoint.includes('/ticket/ticket-form/')) {
@@ -205,14 +272,34 @@ const ApiService = {
    */
   async post(endpoint, data) {
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      // Get the full URL for the request
+      const fullUrl = this.getFullUrl(`${this.baseUrl}${endpoint}`);
+      console.log(`Making POST request to: ${fullUrl}`);
+      
+      const response = await fetch(fullUrl, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
       });
       
+      console.log(`POST response status: ${response.status}`);
+      
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        // Try to get more information about the error
+        let errorMessage = `API error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse the response as JSON, try to get the text
+          try {
+            const errorText = await response.text();
+            errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}...`;
+          } catch (textError) {
+            // If we can't get the text either, just use the status
+          }
+        }
+        throw new Error(errorMessage);
       }
       
       return await response.json();
@@ -230,14 +317,34 @@ const ApiService = {
    */
   async patch(endpoint, data) {
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      // Get the full URL for the request
+      const fullUrl = this.getFullUrl(`${this.baseUrl}${endpoint}`);
+      console.log(`Making PATCH request to: ${fullUrl}`);
+      
+      const response = await fetch(fullUrl, {
         method: 'PATCH',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
       });
       
+      console.log(`PATCH response status: ${response.status}`);
+      
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        // Try to get more information about the error
+        let errorMessage = `API error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse the response as JSON, try to get the text
+          try {
+            const errorText = await response.text();
+            errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}...`;
+          } catch (textError) {
+            // If we can't get the text either, just use the status
+          }
+        }
+        throw new Error(errorMessage);
       }
       
       return await response.json();
@@ -254,13 +361,33 @@ const ApiService = {
    */
   async delete(endpoint) {
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      // Get the full URL for the request
+      const fullUrl = this.getFullUrl(`${this.baseUrl}${endpoint}`);
+      console.log(`Making DELETE request to: ${fullUrl}`);
+      
+      const response = await fetch(fullUrl, {
         method: 'DELETE',
         headers: this.getHeaders()
       });
       
+      console.log(`DELETE response status: ${response.status}`);
+      
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        // Try to get more information about the error
+        let errorMessage = `API error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse the response as JSON, try to get the text
+          try {
+            const errorText = await response.text();
+            errorMessage = `${errorMessage} - ${errorText.substring(0, 100)}...`;
+          } catch (textError) {
+            // If we can't get the text either, just use the status
+          }
+        }
+        throw new Error(errorMessage);
       }
       
       return await response.json();

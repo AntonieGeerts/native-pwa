@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Direct</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Test Direct</h1>
+    <p>This page tests direct API calls to diagnose login issues.</p>
+    
+    <button id="runTest">Run Test</button>
+    <div id="results">Test results will appear here...</div>
+
+    <!-- Include Capacitor if available -->
+    <script src="capacitor.js"></script>
+    
+    <!-- Custom console logger to capture output -->
+    <script>
+        // Override console methods to capture output
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.textContent = ''; // Clear initial text
+        
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        function appendToResults(type, args) {
+            const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+            const prefix = `[${timestamp}] [${type}] `;
+            
+            let message = prefix;
+            for (let i = 0; i < args.length; i++) {
+                if (typeof args[i] === 'object') {
+                    try {
+                        message += JSON.stringify(args[i], null, 2) + ' ';
+                    } catch (e) {
+                        message += args[i] + ' ';
+                    }
+                } else {
+                    message += args[i] + ' ';
+                }
+            }
+            
+            resultsDiv.textContent += message + '\n';
+            resultsDiv.scrollTop = resultsDiv.scrollHeight; // Auto-scroll to bottom
+            
+            // Also log to original console
+            originalConsole[type].apply(console, args);
+        }
+        
+        console.log = function() { appendToResults('log', arguments); };
+        console.error = function() { appendToResults('ERROR', arguments); };
+        console.warn = function() { appendToResults('warn', arguments); };
+        console.info = function() { appendToResults('info', arguments); };
+    </script>
+    
+    <!-- Include the test script -->
+    <script src="api-test-direct.js"></script>
+    
+    <!-- Button handler -->
+    <script>
+        document.getElementById('runTest').addEventListener('click', function() {
+            resultsDiv.textContent = ''; // Clear previous results
+            console.log('Running API test manually...');
+            testDirectApiCalls();
+        });
+        
+        // Log environment info
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Capacitor available:', typeof window.Capacitor !== 'undefined');
+        if (typeof window.Capacitor !== 'undefined') {
+            console.log('Is native:', window.Capacitor.isNativePlatform());
+            console.log('Platform:', window.Capacitor.getPlatform());
+            console.log('CapacitorHttp available:', !!(window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp));
+        }
+    </script>
+</body>
+</html>

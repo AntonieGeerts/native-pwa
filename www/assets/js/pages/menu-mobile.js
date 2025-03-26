@@ -245,21 +245,9 @@ const MenuMobilePage = {
       }
     }
     
-    // Fetch fresh points data from API
-    fetch('/app/api/pwa-reward-point-transaction/my-total-points', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('pwa_token')}`,
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch points data');
-      }
-      return response.json();
-    })
-    .then(data => {
+    // Fetch fresh points data using ApiService.get and pcache endpoint
+    ApiService.get('/pcache/pwa-reward-point-transaction/my-total-points', { returnEmptyOnError: true, emptyValue: { total_points: 0, prev_points: 0 } })
+      .then(data => {
       console.log('Points data fetched:', data);
       
       // Save points data to localStorage
@@ -357,27 +345,10 @@ const MenuMobilePage = {
     }
     
     // Try to fetch notifications from API
-    // Note: We're handling the 404 error gracefully here
-    fetch('/app/api/notifications', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('pwa_token')}`,
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        // If API returns 404, we'll just use the cached notification count
-        if (response.status === 404) {
-          console.log('Notifications API not available (404)');
-          return { unread_count: notificationCount || 0 };
-        }
-        throw new Error('Failed to fetch notifications');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Notifications data:', data);
+    // Note: Using ApiService.get which handles errors including potential 404s gracefully if configured
+    ApiService.get('/unit-owner-notifications/unread', { returnEmptyOnError: true, emptyValue: { unread_count: notificationCount || 0 } })
+      .then(data => {
+      console.log('Notifications data fetched:', data);
       
       // Update notification count if we have valid data
       if (data && typeof data.unread_count !== 'undefined') {

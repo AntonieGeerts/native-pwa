@@ -1,15 +1,14 @@
 {
   "appId": "com.managedpmo.app",
   "appName": "Mandani Bay Community App",
-  "webDir": ".",
+  "webDir": "www",
   "server": {
     "androidScheme": "https",
     "cleartext": true,
     "hostname": "new-app.managedpmo.com",
     "allowNavigation": [
       "new-app.managedpmo.com",
-      "app.managedpmo.com",
-      "api.managedpmo.com"
+      "*.managedpmo.com"
     ]
   },
   "plugins": {
@@ -36,31 +35,6 @@
     },
     "CapacitorCookies": {
       "enabled": true
-    },
-    "LocalNotifications": {
-      "smallIcon": "ic_stat_icon_config_sample",
-      "iconColor": "#7F126E",
-      "sound": "beep.wav"
-    },
-    "PushNotifications": {
-      "presentationOptions": ["badge", "sound", "alert"]
     }
-  },
-  "ios": {
-    "contentInset": "always",
-    "backgroundColor": "#ffffff",
-    "scheme": "pmoapp",
-    "preferredContentMode": "mobile",
-    "limitsNavigationsToAppBoundDomains": true,
-    "handleApplicationNotifications": true
-  },
-  "android": {
-    "backgroundColor": "#ffffff",
-    "allowMixedContent": true,
-    "captureInput": true,
-    "webContentsDebuggingEnabled": true,
-    "initialFocus": false,
-    "useLegacyBridge": false,
-    "windowSoftInputMode": "adjustResize"
   }
 }

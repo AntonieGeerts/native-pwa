@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Updates, Events & Marketplace - Mandani Bay Community App</title>
+  <meta name="description" content="Stay updated with the latest news, events, and marketplace items - Mandani Bay Community App">
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    /* Page specific styles */
+    .header-container {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding-top: env(safe-area-inset-top); /* Add safe area padding */
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn {
+      margin-right: 16px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+     /* Tabs - Reusing styles */
+     .tabs-container {
+      background-color: var(--card-color);
+      position: sticky;
+      /* Adjust top based on header height */
+      top: calc(56px + env(safe-area-inset-top)); /* Assuming header height is 56px */
+      z-index: 99;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tabs {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-bottom: 1px solid var(--divider-color);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+    }
+
+    .tab a {
+      display: block;
+      padding: 16px;
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      font-size: 14px; /* Slightly smaller for 3 tabs */
+    }
+
+    .tab a.active {
+      color: var(--primary-color);
+    }
+
+    .tab a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      padding: 16px;
+       /* Adjust padding for tab bar height and safe area */
+      padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Search Bar */
+    .searchbar-container {
+      position: relative;
+      margin-bottom: 16px; /* Space below search */
+    }
+
+    .search-items {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+
+    .searchbar-container i.fa-search {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+     .searchbar-container i.fa-times { /* Clear button */
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: none; /* Show with JS */
+    }
+
+    /* Item Lists (Common styles) */
+    .item-list {
+      display: grid;
+      grid-template-columns: 1fr; /* Single column on small screens */
+      gap: 16px;
+    }
+
+    @media (min-width: 600px) {
+      .item-list {
+        grid-template-columns: repeat(2, 1fr); /* Two columns on medium screens */
+      }
+    }
+
+     @media (min-width: 992px) {
+      .item-list {
+        grid-template-columns: repeat(3, 1fr); /* Three columns on large screens */
+      }
+    }
+
+    /* Update/News Card */
+    .update-card {
+      background-color: var(--card-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+     .update-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     }
+    .update-card a {
+        text-decoration: none; color: inherit; display: flex; flex-direction: column; flex-grow: 1;
+    }
+    .update-image {
+        height: 180px; background-color: var(--divider-color); background-size: cover; background-position: center;
+    }
+    .update-content {
+        padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .update-title {
+        font-size: 16px; font-weight: 600; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 2.4em;
+    }
+    .update-footer {
+        display: flex; justify-content: space-between; align-items: center; margin-top: 12px;
+    }
+    .update-date { font-size: 12px; color: var(--text-secondary); }
+
+    /* Event Card */
+    .event-card {
+      background-color: var(--card-color); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
+    }
+    .event-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    .event-card a { text-decoration: none; color: inherit; display: flex; flex-direction: column; flex-grow: 1; }
+    .event-image { height: 180px; background-color: var(--divider-color); background-size: cover; background-position: center; }
+    .event-content { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .event-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 2.4em; }
+    .event-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+    .event-date-time, .event-location { font-size: 12px; color: var(--text-secondary); }
+    .event-location { text-align: right; }
+
+     /* Marketplace Card */
+    .marketplace-card {
+      background-color: var(--card-color); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
+    }
+    .marketplace-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    .marketplace-card a { text-decoration: none; color: inherit; display: flex; flex-direction: column; flex-grow: 1; }
+    .marketplace-image { height: 180px; background-color: var(--divider-color); background-size: cover; background-position: center; }
+    .marketplace-content { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .marketplace-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+    .marketplace-price { font-size: 14px; font-weight: 500; color: var(--primary-color); margin-bottom: 8px; }
+    .marketplace-description { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+    .marketplace-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; /* Push to bottom */ }
+    .marketplace-seller, .marketplace-date { font-size: 12px; color: var(--text-secondary); }
+
+    /* Marketplace Buttons */
+    .marketplace-buttons {
+        position: fixed;
+        bottom: calc(70px + env(safe-area-inset-bottom) + 16px); /* Above tab bar + padding */
+        right: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 100;
+    }
+    .marketplace-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        text-decoration: none;
+        font-size: 24px;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+    .marketplace-btn:hover { background-color: var(--primary-dark); transform: scale(1.05); }
+    .marketplace-btn.chats-btn { background-color: var(--accent-color); }
+    .marketplace-btn.chats-btn:hover { background-color: var(--accent-dark); }
+
+
+    /* Preloader */
+    .preloader-container {
+      display: none; /* Hidden by default */
+      padding: 24px;
+      text-align: center;
+      grid-column: 1 / -1; /* Span all columns if grid is active */
+    }
+    .preloader-photo {
+      width: 40px; height: 40px; margin: 0 auto; border: 4px solid rgba(127, 18, 110, 0.3); border-radius: 50%; border-top-color: var(--primary-color); animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <div class="back-btn" id="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="page-title">Updates, Events & Marketplace</div>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <ul class="tabs">
+        <li class="tab"><a href="#updates" class="active" id="updates-tab">Updates</a></li>
+        <li class="tab"><a href="#events" id="events-tab">Events</a></li>
+        <li class="tab"><a href="#marketplace" id="marketplace-tab">Marketplace</a></li>
+      </ul>
+    </div>
+
+    <!-- Tab Content Area -->
+    <div class="tab-content-wrapper">
+        <div id="updates" class="tab-content active">
+            <div class="searchbar-container">
+              <input type="search" class="search-items" id="search-updates" placeholder="Search updates...">
+              <i class="fas fa-search"></i>
+              <i class="fas fa-times clear-search-btn" data-target="search-updates"></i>
+            </div>
+            <div class="item-list" id="updates-list">
+                <!-- Update cards will be inserted here -->
+            </div>
+            <div class="preloader-container" id="updates-preloader">
+                <div class="preloader-photo"></div>
+            </div>
+        </div>
+
+        <div id="events" class="tab-content">
+            <div class="searchbar-container">
+              <input type="search" class="search-items" id="search-events" placeholder="Search events...">
+              <i class="fas fa-search"></i>
+               <i class="fas fa-times clear-search-btn" data-target="search-events"></i>
+            </div>
+             <!-- Add Month/Year filters if needed -->
+            <div class="item-list" id="events-list">
+                <!-- Event cards will be inserted here -->
+            </div>
+             <div class="preloader-container" id="events-preloader">
+                <div class="preloader-photo"></div>
+            </div>
+        </div>
+
+        <div id="marketplace" class="tab-content">
+            <div class="searchbar-container">
+              <input type="search" class="search-items" id="search-marketplace" placeholder="Search marketplace...">
+              <i class="fas fa-search"></i>
+               <i class="fas fa-times clear-search-btn" data-target="search-marketplace"></i>
+            </div>
+             <!-- Add Filter By dropdown if needed -->
+            <div class="item-list" id="marketplace-list">
+                <!-- Marketplace cards will be inserted here -->
+            </div>
+             <div class="preloader-container" id="marketplace-preloader">
+                <div class="preloader-photo"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marketplace Floating Action Buttons (Only show on Marketplace tab) -->
+    <div class="marketplace-buttons" id="marketplace-buttons" style="display: none;">
+        <a href="chat-list.html" class="marketplace-btn chats-btn" title="Chats">
+            <i class="fas fa-comments"></i>
+        </a>
+        <a href="sell-item.html" class="marketplace-btn sell-btn" title="Sell Item">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <a href="navigation.html" class="tab-item">
+        <div class="tab-icon"> <i class="fas fa-th-large"></i> </div> <div class="tab-label">Menu</div>
+      </a>
+      <a href="menu-mobile.html" class="tab-item">
+        <div class="tab-icon"> <i class="fas fa-qrcode"></i> </div> <div class="tab-label">QR Code</div>
+      </a>
+      <a href="share-qr.html" class="tab-item">
+        <div class="tab-icon"> <i class="fas fa-share-alt"></i> </div> <div class="tab-label">Share</div>
+      </a>
+      <a href="notifications.html" class="tab-item" id="notifications-tab">
+        <div class="tab-icon"> <i class="fas fa-bell"></i> </div> <div class="tab-label">Notifications</div>
+        <div class="badge" id="notification-badge" style="display: none;">0</div>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Templates -->
+  <template id="update-card-template">
+    <div class="update-card" data-id="">
+      <a href="#"> <!-- Link to update-detail.html?id=... -->
+        <div class="update-image" style="background-image: url('');"></div>
+        <div class="update-content">
+            <div class="update-title">UPDATE_TITLE</div>
+            <div class="update-footer">
+                <span class="update-date">UPDATE_DATE</span>
+            </div>
+        </div>
+      </a>
+    </div>
+  </template>
+
+  <template id="event-card-template">
+    <div class="event-card" data-id="">
+      <a href="#"> <!-- Link to event-detail.html?id=... -->
+        <div class="event-image" style="background-image: url('');"></div>
+        <div class="event-content">
+            <div class="event-title">EVENT_TITLE</div>
+            <div class="event-footer">
+                <span class="event-date-time">EVENT_DATE_TIME</span>
+                <span class="event-location">EVENT_LOCATION</span>
+            </div>
+        </div>
+      </a>
+    </div>
+  </template>
+
+   <template id="marketplace-card-template">
+    <div class="marketplace-card" data-id="">
+      <a href="#"> <!-- Link to marketplace-detail.html?id=... -->
+        <div class="marketplace-image" style="background-image: url('');"></div>
+        <div class="marketplace-content">
+            <div> <!-- Top part -->
+                <div class="marketplace-title">ITEM_NAME</div>
+                <div class="marketplace-price">ITEM_PRICE</div>
+                <div class="marketplace-description">ITEM_DESCRIPTION</div>
+            </div>
+            <div class="marketplace-footer"> <!-- Bottom part -->
+                <span class="marketplace-seller">SELLER_INFO</span>
+                <span class="marketplace-date">DATE_POSTED</span>
+            </div>
+        </div>
+      </a>
+    </div>
+  </template>
+
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <script src="assets/js/capacitor.js"></script>
+  <script src="assets/js/capacitor-init.js?v=20250325"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  <script src="assets/js/services/api-service.js"></script>
+  <!-- Page-specific script -->
+  <script src="assets/js/pages/updates-events-marketplace-page.js"></script>
+
+  <script>
+    // Basic back button functionality
+    document.getElementById('back-btn').addEventListener('click', () => window.history.back());
+
+    // Tab switching logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tabs-container .tab a');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const marketplaceButtons = document.getElementById('marketplace-buttons');
+
+        function setActiveTab(targetId) {
+            // Deactivate existing active tab and content
+            document.querySelector('.tabs-container .tab a.active')?.classList.remove('active');
+            document.querySelector('.tab-content.active')?.classList.remove('active');
+
+            // Activate new tab and content
+            const newActiveTab = document.querySelector(`.tabs-container .tab a[href="${targetId}"]`);
+            const newActiveContent = document.querySelector(targetId);
+            if (newActiveTab) newActiveTab.classList.add('active');
+            if (newActiveContent) newActiveContent.classList.add('active');
+
+            // Show/hide marketplace buttons
+            if (marketplaceButtons) {
+                marketplaceButtons.style.display = (targetId === '#marketplace') ? 'flex' : 'none';
+            }
+
+            // Dispatch custom event
+            console.log(`Dispatching tab-switched for ${targetId.substring(1)}`);
+            document.dispatchEvent(new CustomEvent('tab-switched', { detail: { tabId: targetId.substring(1) } }));
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+                const activeContentId = this.getAttribute('href');
+                setActiveTab(activeContentId);
+                // Optional: Store active tab in localStorage/sessionStorage
+                // localStorage.setItem('activeNewsTab', activeContentId);
+            });
+        });
+
+        // Set initial active tab (ensure this runs after event listener setup in the page script)
+        // Defer initial activation slightly to ensure page script listener is ready
+        setTimeout(() => {
+            const savedTab = localStorage.getItem('activeNewsTab'); // Example if saving state
+            setActiveTab(savedTab || '#updates'); // Default to updates
+        }, 0);
+
+
+        // Search clear button logic
+        document.querySelectorAll('.clear-search-btn').forEach(btn => {
+            const targetInput = document.getElementById(btn.dataset.target);
+            if (targetInput) {
+                targetInput.addEventListener('input', function() {
+                    btn.style.display = this.value ? 'block' : 'none';
+                });
+                btn.addEventListener('click', function() {
+                    targetInput.value = '';
+                    targetInput.dispatchEvent(new Event('input')); // Trigger input event for filtering
+                    targetInput.focus();
+                    btn.style.display = 'none';
+                });
+                 // Initial check in case field is pre-populated
+                btn.style.display = targetInput.value ? 'block' : 'none';
+            }
+        });
+
+
+        // Check authentication (Handled by app.js)
+        // checkAuth(); // Removed redundant call
+        // Init page JS is now handled by the page script itself listening for DOMContentLoaded
+    });
+  </script>
+</body>
+</html>

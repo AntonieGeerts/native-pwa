@@ -82,6 +82,15 @@ const TicketReportPage = {
       });
     }
     
+    // Back button - Navigate directly to menu page
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        // Use direct navigation as history.back() might be unreliable in Capacitor
+        window.location.href = 'menu-mobile.html';
+      });
+    }
+    
     // Check for request type in URL
     const urlParams = new URLSearchParams(window.location.search);
     const requestType = urlParams.get('type');

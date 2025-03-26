@@ -25,6 +25,8 @@
       min-height: 100vh;
       width: 100%;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     
     .qr-container {
@@ -32,6 +34,32 @@
       transform: scale(1);
       transition: opacity 0.3s, transform 0.3s;
       pointer-events: all;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 0px; /* Updated padding */
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Ensure the QR code card takes up less space */
+    .qr-card {
+      margin: 0 16px 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      margin-bottom: 12px;
     }
     
     .navigation-container {
@@ -243,11 +271,59 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 20px 16px;
-      padding: 16px;
-      background-color: var(--card-background);
+      margin: 10px 16px 20px;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: white;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+      position: relative;
+      z-index: 5;
+    }
+    
+    .swipe-instruction .fa-chevron-right {
+      color: white;
+    }
+    
+    /* Fixed tab bar */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background-color: var(--card-background);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      height: 60px; /* Ensure consistent height */
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    
+    /* Tab item styles */
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0;
+      text-decoration: none;
+      color: var(--text-secondary);
+    }
+    
+    .tab-item.active {
+      color: var(--primary-color);
+    }
+    
+    .tab-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    
+    .tab-label {
+      font-size: 12px;
     }
     
     .two-arrow-right-icon {
@@ -306,16 +382,11 @@
               </div>
             </div>
           </div>
-          <div class="profile-actions">
-            <button class="p-btn p-prim-col" id="view-rewards-btn">
-              <i class="fas fa-award"></i> View Rewards
-            </button>
-          </div>
         </div>
         
-        <!-- Points Card -->
+        <!-- Combined Rewards Card -->
         <div class="points-card">
-          <div class="points-header">Reward Points</div>
+          <div class="points-header">Rewards</div>
           <div class="points-content">
             <div class="points-item">
               <div class="points-label">Total Points</div>
@@ -325,6 +396,12 @@
               <div class="points-label">Last Points</div>
               <div class="points-value" id="last-points">0</div>
             </div>
+          </div>
+          <div class="profile-actions" style="border-top: 1px solid var(--divider-color); padding-top: 12px; margin-top: 8px;">
+            <button class="p-btn p-prim-col" id="view-rewards-btn" style="width: 100%;">
+              <i class="fas fa-award"></i> View Rewards
+            </button>
+          </div>
           </div>
         </div>
         
@@ -338,14 +415,8 @@
           </button>
         </div>
         
-        <!-- Swipe Instruction -->
-        <div class="swipe-instruction">
-          <span>Swipe for Menu</span>
-          <div class="two-arrow-right-icon">
-            <i class="fas fa-chevron-right right1"></i>
-            <i class="fas fa-chevron-right right2"></i>
-          </div>
-        </div>
+        <!-- Swipe Instruction Removed -->
+        
       </div>
       
       <!-- Tab Bar -->

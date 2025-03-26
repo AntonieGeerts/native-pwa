@@ -5,10 +5,7 @@
 
 // List of potential API URLs to test
 const API_URLS = [
-  'https://new-app.managedpmo.com/app/api',
-  'https://app.managedpmo.com/api',
-  'https://api.managedpmo.com',
-  'https://managedpmo.com/api'
+  'https://new-app.managedpmo.com/app/api'
 ];
 
 // Test endpoints

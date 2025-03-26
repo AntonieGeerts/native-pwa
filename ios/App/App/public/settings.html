@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Settings - PMO Native App</title>
+  <meta name="description" content="Settings - PMO Native App">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-left">
+        <button id="menu-toggle" class="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div class="header-title">
+        Settings
+      </div>
+      <div class="header-right">
+        <button id="notifications-button" class="notifications-button">
+          <span class="icon">🔔</span>
+        </button>
+      </div>
+    </header>
+    
+    <nav id="side-menu" class="side-menu">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img src="assets/images/icons/icon-placeholder.html" alt="User Avatar" id="user-avatar">
+        </div>
+        <div class="user-info">
+          <div id="user-name">Loading...</div>
+          <div id="user-role">Loading...</div>
+        </div>
+      </div>
+      
+      <ul class="menu-items">
+        <li><a href="dashboard.html"><span class="icon">🏠</span> Dashboard</a></li>
+        <li><a href="profile.html"><span class="icon">👤</span> Profile</a></li>
+        <li class="active"><a href="settings.html"><span class="icon">⚙️</span> Settings</a></li>
+        <li><a href="#" id="logout-button"><span class="icon">🚪</span> Logout</a></li>
+      </ul>
+    </nav>
+    
+    <main class="main-content">
+      <div class="settings-container">
+        <div class="settings-section">
+          <h2>App Settings</h2>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">🌙</span>
+              <span>Dark Mode</span>
+            </div>
+            <div class="settings-item-control">
+              <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">🔔</span>
+              <span>Push Notifications</span>
+            </div>
+            <div class="settings-item-control">
+              <label class="switch">
+                <input type="checkbox" id="notifications-toggle" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">🌐</span>
+              <span>Language</span>
+            </div>
+            <div class="settings-item-control">
+              <select id="language-select" class="settings-select">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h2>Notification Settings</h2>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📢</span>
+              <span>Announcements</span>
+            </div>
+            <div class="settings-item-control">
+              <label class="switch">
+                <input type="checkbox" id="announcements-toggle" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📝</span>
+              <span>Task Updates</span>
+            </div>
+            <div class="settings-item-control">
+              <label class="switch">
+                <input type="checkbox" id="task-updates-toggle" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📅</span>
+              <span>Calendar Events</span>
+            </div>
+            <div class="settings-item-control">
+              <label class="switch">
+                <input type="checkbox" id="calendar-events-toggle" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h2>App Information</h2>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">ℹ️</span>
+              <span>Version</span>
+            </div>
+            <div class="settings-item-value">
+              1.0.0
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📱</span>
+              <span>Platform</span>
+            </div>
+            <div class="settings-item-value" id="platform-value">
+              Web
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📄</span>
+              <span>Terms of Service</span>
+            </div>
+            <div class="settings-item-action">
+              <a href="#" id="terms-link">View</a>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">🔒</span>
+              <span>Privacy Policy</span>
+            </div>
+            <div class="settings-item-action">
+              <a href="#" id="privacy-link">View</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h2>Actions</h2>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">💾</span>
+              <span>Save Data Offline</span>
+            </div>
+            <div class="settings-item-control">
+              <button id="save-offline-button" class="btn btn-secondary">Save</button>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">🗑️</span>
+              <span>Clear Cache</span>
+            </div>
+            <div class="settings-item-control">
+              <button id="clear-cache-button" class="btn btn-secondary">Clear</button>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="settings-item-label">
+              <span class="settings-icon">📲</span>
+              <span>Install App</span>
+            </div>
+            <div class="settings-item-control">
+              <button id="install-button" class="btn btn-primary">Install</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  <!-- Capacitor Core and Initialization -->
+  <script src="assets/js/capacitor-core.js?v=20250325"></script>
+  <script src="assets/js/capacitor-init.js?v=20250325"></script>
+
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      const token = localStorage.getItem('pwa_token');
+      if (!token) {
+        // Not authenticated, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Load user data
+      const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+      
+      // Update UI with user data
+      document.getElementById('user-name').textContent = userData.name || 'User';
+      document.getElementById('user-role').textContent = userData.role || 'Member';
+      
+      // Set up menu toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const app = document.getElementById('app');
+      
+      menuToggle.addEventListener('click', function() {
+        app.classList.toggle('menu-open');
+      });
+      
+      // Set up logout
+      document.getElementById('logout-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Call logout function
+        if (window.Auth && window.Auth.logout) {
+          window.Auth.logout()
+            .then(() => {
+              // Redirect to login
+              window.location.href = 'login.html';
+            })
+            .catch(error => {
+              console.error('Logout error:', error);
+              
+              // Still redirect to login even if API call fails
+              window.location.href = 'login.html';
+            });
+        } else {
+          // Clear local storage
+          localStorage.removeItem('pwa_token');
+          localStorage.removeItem('user_data');
+          
+          // Redirect to login
+          window.location.href = 'login.html';
+        }
+      });
+      
+      // Set up dark mode toggle
+      const darkModeToggle = document.getElementById('dark-mode-toggle');
+      const savedDarkMode = localStorage.getItem('dark_mode') === 'true';
+      
+      // Set initial state
+      darkModeToggle.checked = savedDarkMode;
+      document.body.classList.toggle('dark-mode', savedDarkMode);
+      
+      // Handle toggle change
+      darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+        localStorage.setItem('dark_mode', this.checked);
+      });
+      
+      // Set up platform detection
+      const platformValue = document.getElementById('platform-value');
+      if (window.CapacitorApp && window.CapacitorApp.isNativePlatform) {
+        if (window.CapacitorApp.isAndroid()) {
+          platformValue.textContent = 'Android';
+        } else if (window.CapacitorApp.isIOS()) {
+          platformValue.textContent = 'iOS';
+        } else {
+          platformValue.textContent = 'Web';
+        }
+      }
+      
+      // Set up terms and privacy links
+      document.getElementById('terms-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (window.CapacitorApp && window.CapacitorApp.browser) {
+          window.CapacitorApp.browser.open({
+            url: 'https://www.managedpmo.com/terms'
+          });
+        } else {
+          window.open('https://www.managedpmo.com/terms', '_blank');
+        }
+      });
+      
+      document.getElementById('privacy-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (window.CapacitorApp && window.CapacitorApp.browser) {
+          window.CapacitorApp.browser.open({
+            url: 'https://www.managedpmo.com/privacy-policy'
+          });
+        } else {
+          window.open('https://www.managedpmo.com/privacy-policy', '_blank');
+        }
+      });
+      
+      // Set up save offline button
+      document.getElementById('save-offline-button').addEventListener('click', function() {
+        // Show loading state
+        this.disabled = true;
+        this.textContent = 'Saving...';
+        
+        // Simulate saving data offline
+        setTimeout(() => {
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Save';
+          
+          // Show success message
+          alert('Data saved for offline use');
+        }, 1500);
+      });
+      
+      // Set up clear cache button
+      document.getElementById('clear-cache-button').addEventListener('click', function() {
+        // Show loading state
+        this.disabled = true;
+        this.textContent = 'Clearing...';
+        
+        // Clear caches
+        if ('caches' in window) {
+          caches.keys().then(cacheNames => {
+            return Promise.all(
+              cacheNames.map(cacheName => {
+                return caches.delete(cacheName);
+              })
+            );
+          }).then(() => {
+            // Reset button state
+            this.disabled = false;
+            this.textContent = 'Clear';
+            
+            // Show success message
+            alert('Cache cleared successfully');
+          });
+        } else {
+          // Reset button state
+          this.disabled = false;
+          this.textContent = 'Clear';
+          
+          // Show message
+          alert('Cache API not available');
+        }
+      });
+      
+      // Set up install button
+      const installButton = document.getElementById('install-button');
+      
+      // Check if app is already installed
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        installButton.disabled = true;
+        installButton.textContent = 'Installed';
+      } else {
+        // Show or hide install button based on availability
+        if (window.deferredPrompt) {
+          installButton.style.display = 'block';
+        } else {
+          installButton.style.display = 'none';
+        }
+        
+        // Handle install button click
+        installButton.addEventListener('click', function() {
+          if (!window.deferredPrompt) {
+            alert('Installation not available');
+            return;
+          }
+          
+          // Show the install prompt
+          window.deferredPrompt.prompt();
+          
+          // Wait for the user to respond to the prompt
+          window.deferredPrompt.userChoice.then(choiceResult => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+              installButton.disabled = true;
+              installButton.textContent = 'Installed';
+            } else {
+              console.log('User dismissed the install prompt');
+            }
+            
+            // Clear the saved prompt
+            window.deferredPrompt = null;
+          });
+        });
+      }
+    });
+  </script>
+  
+  <style>
+    .settings-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .settings-section {
+      background-color: var(--card-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .settings-section h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: var(--primary-color);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+    
+    .settings-item-label {
+      display: flex;
+      align-items: center;
+    }
+    
+    .settings-icon {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    
+    .settings-item-value {
+      color: var(--text-secondary);
+    }
+    
+    .settings-item-action a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .settings-select {
+      padding: 8px;
+      border: 1px solid var(--divider-color);
+      border-radius: 4px;
+      background-color: var(--card-color);
+      color: var(--text-color);
+    }
+    
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--divider-color);
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    .slider.round {
+      border-radius: 24px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    
+    .btn-secondary {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #e91e63;
+    }
+    
+    .btn-secondary:disabled {
+      background-color: var(--divider-color);
+      cursor: not-allowed;
+    }
+  </style>
+</body>
+</html>

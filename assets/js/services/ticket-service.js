@@ -10,10 +10,16 @@ const TicketService = {
    */
   async getCategories() {
     try {
-      return await ApiService.get('/ticket/ticket-category');
+      // Use the enhanced API service with fallback options
+      return await ApiService.get('/ticket/ticket-category', {
+        returnEmptyOnError: true,
+        emptyValue: [],
+        allowNoAuth: true
+      });
     } catch (error) {
       console.error('Error fetching ticket categories:', error);
-      throw error;
+      // Return empty array instead of throwing to prevent UI crashes
+      return [];
     }
   },
   
@@ -116,10 +122,16 @@ const TicketService = {
    */
   async getStatuses() {
     try {
-      return await ApiService.get('/ticket/ticket-status');
+      // Use the enhanced API service with fallback options
+      return await ApiService.get('/ticket/ticket-status', {
+        returnEmptyOnError: true,
+        emptyValue: [],
+        allowNoAuth: true
+      });
     } catch (error) {
       console.error('Error fetching ticket statuses:', error);
-      throw error;
+      // Return empty array instead of throwing to prevent UI crashes
+      return [];
     }
   },
   

@@ -10,10 +10,16 @@ const TicketService = {
    */
   async getCategories() {
     try {
-      return await ApiService.get('/ticket/ticket-category');
+      // Use the enhanced API service with fallback options and pcache endpoint
+      return await ApiService.get('/pcache/ticket/ticket-category', {
+        returnEmptyOnError: true,
+        emptyValue: [],
+        allowNoAuth: true
+      });
     } catch (error) {
       console.error('Error fetching ticket categories:', error);
-      throw error;
+      // Return empty array instead of throwing to prevent UI crashes
+      return [];
     }
   },
   
@@ -23,7 +29,7 @@ const TicketService = {
    */
   async getFormsWithCategories() {
     try {
-      const response = await ApiService.get('/ticket/ticket-forms-with-categories');
+      const response = await ApiService.get('/pcache/ticket/ticket-forms-with-categories'); // Use pcache endpoint
       console.log('Raw forms with categories response:', response);
       
       // Handle different response formats
@@ -59,8 +65,8 @@ const TicketService = {
    */
   async getForms() {
     try {
-      // Use the enhanced API service with fallback options
-      const response = await ApiService.get('/ticket/ticket-form', {
+      // Use the enhanced API service with fallback options and pcache endpoint
+      const response = await ApiService.get('/pcache/ticket/ticket-form', { // Use pcache endpoint
         returnEmptyOnError: true,
         emptyValue: [],
         allowNoAuth: false
@@ -116,10 +122,16 @@ const TicketService = {
    */
   async getStatuses() {
     try {
-      return await ApiService.get('/ticket/ticket-status');
+      // Use the enhanced API service with fallback options and pcache endpoint
+      return await ApiService.get('/pcache/ticket/ticket-status', { // Use pcache endpoint
+        returnEmptyOnError: true,
+        emptyValue: [],
+        allowNoAuth: true
+      });
     } catch (error) {
       console.error('Error fetching ticket statuses:', error);
-      throw error;
+      // Return empty array instead of throwing to prevent UI crashes
+      return [];
     }
   },
   
@@ -129,7 +141,7 @@ const TicketService = {
    */
   async getTickets() {
     try {
-      return await ApiService.get('/ticket/ticket-entry');
+      return await ApiService.get('/pcache/ticket/ticket-entry/0'); // Use pcache endpoint with /0
     } catch (error) {
       console.error('Error fetching ticket entries:', error);
       throw error;

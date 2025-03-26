@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Offline - PMO Native App</title>
+  <meta name="description" content="You are currently offline">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    .offline-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      text-align: center;
+    }
+    
+    .offline-icon {
+      font-size: 72px;
+      margin-bottom: 24px;
+      color: var(--primary-color);
+    }
+    
+    .offline-title {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--text-color);
+    }
+    
+    .offline-message {
+      font-size: 16px;
+      margin-bottom: 24px;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+    
+    .retry-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .retry-button:hover {
+      background-color: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📶</div>
+    <h1 class="offline-title">You're Offline</h1>
+    <p class="offline-message">
+      It looks like you've lost your internet connection. 
+      Please check your connection and try again.
+    </p>
+    <button class="retry-button" id="retry-button">Try Again</button>
+  </div>
+  
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+  <!-- Capacitor Core and Initialization -->
+  <script src="assets/js/capacitor-core.js?v=20250325"></script>
+  <script src="assets/js/capacitor-init.js?v=20250325"></script>
+
+  
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const retryButton = document.getElementById('retry-button');
+      
+      retryButton.addEventListener('click', function() {
+        // Try to reload the page
+        window.location.reload();
+      });
+      
+      // Check if we're back online
+      window.addEventListener('online', function() {
+        // Redirect to the home page
+        window.location.href = '/';
+      });
+    });
+  </script>
+</body>
+</html>

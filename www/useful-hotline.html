@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Useful Hotline - Mandani Bay Community App</title>
+  <meta name="description" content="Find important contact numbers - Mandani Bay Community App">
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#7F126E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192x192.png">
+
+  <!-- Puppertino CSS -->
+  <link rel="stylesheet" href="Puppertino/dist/css/newfull.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    /* Useful Hotline page specific styles */
+    .header-container {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding-top: env(safe-area-inset-top); /* Add safe area padding */
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px; /* Space for search bar */
+    }
+
+    .back-btn {
+      margin-right: 16px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+     /* Search Bar in Header */
+    .search-hotline-container {
+        position: relative;
+    }
+    .search-hotline {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.2); /* Light background for contrast */
+      color: white;
+      outline: none;
+    }
+    .search-hotline::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    .search-hotline-container i.fa-search {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+    }
+     .search-hotline-container i.fa-times { /* Clear button */
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      display: none; /* Show with JS */
+    }
+
+
+    .main-content {
+      padding: 16px;
+      /* Adjust padding for tab bar height and safe area */
+      padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+
+    /* Hotline Category List */
+    .hotline-categories-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 24px 0; /* Space before emergency button */
+        background-color: var(--card-color);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden; /* Clip borders */
+    }
+    .hotline-categories-list li {
+        border-bottom: 1px solid var(--divider-color);
+    }
+    .hotline-categories-list li:last-child {
+        border-bottom: none;
+    }
+    .hotline-categories-list a {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: background-color 0.2s;
+        font-weight: 500;
+    }
+     .hotline-categories-list a:hover {
+         background-color: rgba(0,0,0,0.05);
+     }
+    .hotline-categories-list a .category-name {
+        flex-grow: 1;
+    }
+     .hotline-categories-list a .chevron {
+         margin-left: auto;
+         color: var(--text-secondary);
+     }
+
+    /* Emergency App Button */
+    .emergency-button-container {
+        text-align: center;
+    }
+    .launch-emergency-app-btn {
+        background-color: var(--error-color); /* Use error color for emphasis */
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex; /* Use inline-flex for icon alignment */
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s;
+    }
+    .launch-emergency-app-btn:hover, .launch-emergency-app-btn:active {
+        background-color: #C62828; /* Darker red */
+    }
+    .launch-emergency-app-icon {
+        /* Style the icon if using a background image */
+        /* background-image: url('path/to/emergency-icon.svg'); */
+        /* background-size: contain; */
+        /* width: 20px; height: 20px; */
+        margin-right: 8px;
+        /* Using Font Awesome as fallback */
+        font-size: 18px;
+    }
+
+
+    /* Preloader */
+    .preloader-container {
+      display: none; /* Hidden by default */
+      padding: 24px;
+      text-align: center;
+    }
+    .preloader-photo {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto;
+      border: 4px solid rgba(127, 18, 110, 0.3); /* Primary color light */
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <div class="back-btn" id="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="page-title">Useful Hotline</div>
+      </div>
+      <div class="search-hotline-container">
+        <input type="search" class="search-hotline" id="search-keyword" placeholder="Search categories...">
+        <i class="fas fa-search"></i>
+        <i class="fas fa-times" id="clear-search-btn"></i>
+      </div>
+    </div>
+
+    <div class="main-content">
+        <div class="preloader-container" id="hotline-preloader">
+            <div class="preloader-photo"></div>
+        </div>
+
+        <ul class="hotline-categories-list" id="hotline-categories">
+            <!-- Categories will be inserted here by JavaScript -->
+        </ul>
+
+        <div id="no-hotlines-message" style="display: none; text-align: center; color: var(--text-secondary); padding: 20px;">
+            No hotline categories found.
+        </div>
+
+        <div class="emergency-button-container">
+            <!-- Note: intent:// URLs are Android-specific and may not work reliably in a PWA context across all platforms. -->
+            <a href="intent://main/#Intent;action=main;package=com.sugbotek.gniylf.noiprocs.yeknom.guardianapp;end" class="launch-emergency-app-btn">
+                <span class="launch-emergency-app-icon"><i class="fas fa-exclamation-triangle"></i></span> Launch Emergency App
+            </a>
+        </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <a href="navigation.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-th-large"></i>
+        </div>
+        <div class="tab-label">Menu</div>
+      </a>
+      <a href="menu-mobile.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <div class="tab-label">QR Code</div>
+      </a>
+      <a href="share-qr.html" class="tab-item">
+        <div class="tab-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="tab-label">Share</div>
+      </a>
+      <a href="notifications.html" class="tab-item" id="notifications-tab">
+        <div class="tab-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="tab-label">Notifications</div>
+        <div class="badge" id="notification-badge" style="display: none;">0</div>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Hotline Category Template -->
+  <template id="hotline-category-template">
+    <li>
+      <a href="#"> <!-- Link will be set by JS to view-hotline.html?category=... -->
+        <span class="category-name">CATEGORY_NAME</span>
+        <i class="fas fa-chevron-right chevron"></i>
+      </a>
+    </li>
+  </template>
+
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+  <!-- Lodash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <!-- Hammer.js for swipe gestures -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
+  <!-- Capacitor Core -->
+  <script src="assets/js/capacitor.js"></script>
+
+  <!-- Capacitor Initialization -->
+  <script src="assets/js/capacitor-init.js?v=20250325"></script>
+
+  <!-- App Scripts -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/register-sw.js"></script>
+
+  <!-- Services -->
+  <script src="assets/js/services/api-service.js"></script>
+  <!-- Add other necessary services if needed -->
+
+  <!-- Page-specific script -->
+  <script src="assets/js/pages/useful-hotline-page.js"></script>
+
+  <script>
+    // Basic back button functionality
+    document.getElementById('back-btn').addEventListener('click', function() {
+      window.history.back();
+    });
+
+    // Check authentication on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuth(); // Assumes checkAuth() is defined in auth.js and handles redirection
+        // Initialize page-specific JS if needed after auth check
+        // e.g., if (isAuthenticated()) { initUsefulHotlinePage(); }
+
+        // Search clear button logic
+        const searchInput = document.getElementById('search-keyword');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        if (searchInput && clearSearchBtn) {
+            searchInput.addEventListener('input', function() {
+                clearSearchBtn.style.display = this.value ? 'block' : 'none';
+            });
+            clearSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input')); // Trigger input event for filtering
+                searchInput.focus();
+            });
+        }
+    });
+  </script>
+</body>
+</html>

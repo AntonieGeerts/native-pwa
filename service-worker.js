@@ -13,7 +13,9 @@ const ASSETS_TO_CACHE = [
   '/assets/css/styles.css',
   '/assets/js/app.js',
   '/assets/js/auth.js',
-  '/assets/js/capacitor.js'
+  '/assets/js/capacitor.js',
+  '/assets/js/capacitor-core.js',
+  '/assets/js/capacitor-init.js'
 ];
 
 // Install event - cache assets

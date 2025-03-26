@@ -37,10 +37,11 @@ window.CapacitorApp = window.CapacitorApp || {};
   if (isCapacitorAvailable) {
     try {
       // Import Capacitor plugins
-      const { 
+      const {
         SplashScreen, StatusBar, Device, Network, Browser,
         Preferences, Keyboard, LocalNotifications, PushNotifications,
-        Camera, Filesystem, Geolocation, Share, Toast, Haptics, Dialog
+        Camera, Filesystem, Geolocation, Share, Toast, Haptics, Dialog,
+        CapacitorHttp
       } = window.Capacitor.Plugins;
       
       // Store plugin instances
@@ -60,7 +61,8 @@ window.CapacitorApp = window.CapacitorApp || {};
         Share,
         Toast,
         Haptics,
-        Dialog
+        Dialog,
+        CapacitorHttp
       };
       
       // Initialize platform-specific features
@@ -322,6 +324,52 @@ window.CapacitorApp = window.CapacitorApp || {};
           } else {
             alert(`Share: ${title}\n${text}\n${url}`);
           }
+        }
+      },
+      
+      // CapacitorHttp fallback using fetch
+      CapacitorHttp: {
+        get: async ({ url, headers = {}, params = {} }) => {
+          // Add query params to URL
+          const urlObj = new URL(url);
+          Object.keys(params).forEach(key => urlObj.searchParams.append(key, params[key]));
+          
+          // Make the request
+          const response = await fetch(urlObj.toString(), {
+            method: 'GET',
+            headers: headers
+          });
+          
+          // Parse response
+          const data = await response.json().catch(() => ({}));
+          
+          // Return in CapacitorHttp format
+          return {
+            status: response.status,
+            headers: Object.fromEntries([...response.headers.entries()]),
+            data: data
+          };
+        },
+        post: async ({ url, headers = {}, data = {} }) => {
+          // Make the request
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...headers
+            },
+            body: JSON.stringify(data)
+          });
+          
+          // Parse response
+          const responseData = await response.json().catch(() => ({}));
+          
+          // Return in CapacitorHttp format
+          return {
+            status: response.status,
+            headers: Object.fromEntries([...response.headers.entries()]),
+            data: responseData
+          };
         }
       }
     };
